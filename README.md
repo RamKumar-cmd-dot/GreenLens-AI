@@ -1,6 +1,6 @@
 # GreenLens AI — Lloyds Green Customer Insights Platform
 
-GreenLens is a synthetic-data hackathon prototype for the four mandatory Lloyds PS1 opportunities: GP01 EV Finance, GP02 Green Home Loan, GP03 Solar Finance and GP04 Paperless Banking. Its React customer and business dashboards call a FastAPI backend, which loads the saved ML pipelines, applies separate use-case screens, calculates deterministic sustainability scenarios and returns constrained explanations.
+GreenLens is a synthetic-data hackathon prototype for the four mandatory Lloyds PS1 opportunities: GP01 EV Finance, GP02 Green Home Loan, GP03 Solar Finance and GP04 Paperless Banking. Its React customer and business dashboards call a FastAPI backend, which loads the saved ML pipelines, applies separate use-case screens, calculates deterministic sustainability scenarios, returns constrained explanations, and reruns saved models for optional what-if scenarios.
 
 All customers, bank activity and product take-up labels are fictional. Propensity is a simulated-outcome model estimate; the validation-selected threshold is only a statistical prioritization signal. Neither establishes product eligibility, affordability or credit approval. Carbon values are conditional annual operating scenarios, not promised savings or financed-emissions accounting.
 
@@ -34,4 +34,4 @@ Use the installed `.venv` for the recorded model artifacts. `python -m ml.run_pi
 
 Core paths: relational synthetic data in `data/synthetic/`; Customer 360 and split IDs in `data/processed/`; saved models in `ml/models/`; metrics and held-out predictions in `ml/reports/`; backend modules in `backend/`; React source in `frontend/`. The 8 GB historical meter files under `data/external/` are optional local inputs and are ignored by Git. Do not commit the raw data or backup artifact directories.
 
-See [evaluation report](docs/model_evaluation.md), [architecture](docs/architecture.md), [sustainability method](docs/sustainability_methodology.md), [responsible-AI notes](docs/responsible_ai.md), and [three-minute demo](docs/demo_script.md). The source brief is [deliverables/M1.pdf](deliverables/M1.pdf).
+See the [audit resolution checklist](docs/audit_resolution_checklist.md), [evaluation report](docs/model_evaluation.md), [architecture](docs/architecture.md), [sustainability method](docs/sustainability_methodology.md), [LLM method](docs/llm_methodology.md), [responsible-AI notes](docs/responsible_ai.md), and [three-minute demo](docs/demo_script.md). The repository contains the team's [M1 approach](deliverables/M1.pdf); it does not contain the full official Lloyds PS1 brief.

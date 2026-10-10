@@ -73,3 +73,7 @@ class Store:
     def spending(self, cid):
         with self.connect() as db:
             return [dict(r) for r in db.execute('SELECT substr(transaction_date,1,7) AS month, sustainability_category AS category, round(sum(amount_gbp),2) AS amount_gbp FROM transactions WHERE customer_id=? GROUP BY month,category ORDER BY month,category',(cid,))]
+
+    def business_trends(self):
+        with self.connect() as db:
+            return [dict(r) for r in db.execute("SELECT substr(transaction_date,1,7) AS month, sustainability_category AS category, round(sum(amount_gbp),2) AS amount_gbp FROM transactions GROUP BY month,category ORDER BY month,category")]

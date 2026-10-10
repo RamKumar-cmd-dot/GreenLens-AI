@@ -22,11 +22,18 @@ def test_milestone_a(client):
     assert all(0<=r['propensity']<=1 for r in result)
     assert all(0<=r['threshold_screen']['threshold']<=1 for r in result)
     assert all(r['threshold_screen']['above_threshold']==(r['propensity']>=r['threshold_screen']['threshold']) for r in result)
+    scenario=client.post('/customers/C000025/scenario',json={'changes':{'vehicle_ownership':1,'vehicle_type':'electric','owns_ev':1,'replacement_intent':0}})
+    assert scenario.status_code==200 and scenario.json()['synthetic']
+    assert len(scenario.json()['opportunities'])==4
+    assert next(r for r in scenario.json()['opportunities'] if r['product_id']=='GP01')['status']=='EXCLUDED'
+    assert client.post('/customers/C000025/scenario',json={'changes':{'ev_finance_takeup':1}}).status_code==422
 
 def test_business_and_insights(client,monkeypatch):
     monkeypatch.delenv('OPENAI_API_KEY',raising=False)
     s=client.get('/business/summary').json()
     assert s['total_customers']==5000
+    assert s['portfolio_energy_kwh_year']>0 and 0<=s['paperless_adoption_rate']<=1
+    assert s['mobile_app_active_customers']>0 and s['mean_monthly_digital_logins']>0
     assert s['unique_customers_with_opportunities']<=5000
     for p in s['products']:
         assert sum(p['status_counts'].values())==5000
@@ -40,6 +47,9 @@ def test_business_and_insights(client,monkeypatch):
     segments=client.get('/business/segments').json()['items']
     assert sum(x['customers'] for x in segments)==5000
     assert sum(x['potential_customers'] for x in segments)==s['unique_customers_with_opportunities']
+    trends=client.get('/business/trends').json()
+    assert len(trends['items'])>0 and {x['category'] for x in trends['items']}<=set(['Fuel','Electricity','Gas','Public Transport','Home Improvement','Automotive','Utilities','Other'])
+    assert {x['month'] for x in trends['items']}=={f'2025-{i:02}' for i in range(1,13)}
     insights=client.get('/customers/C000025/insights').json()
     assert len(insights['explanations'])==4 and len(insights['monthly_spending'])>0
     assert all(e['source']=='deterministic' for e in insights['explanations'])

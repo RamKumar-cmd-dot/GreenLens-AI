@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 Scalar = str | float | int | bool | None
@@ -50,6 +50,7 @@ class Impact(BaseModel):
     generation_kwh: float | None = None
     assumptions: list[str] = []
     factors: list[dict[str, Scalar]] = []
+    references: list[dict[str, Scalar]] = []
     limitations: list[str] = []
     reason: str | None = None
     accounting: str = 'Operational scenario estimate; not financed emissions or guaranteed realized savings'
@@ -61,7 +62,7 @@ class Recommendation(BaseModel):
     propensity: float = Field(ge=0, le=1)
     threshold_screen: dict[str, Scalar]
     confidence: float | None = None
-    reliability: dict[str, Scalar]
+    reliability: dict[str, Any]
     status: Status
     financial_eligibility: str = 'NOT_ASSESSED'
     applicable_exclusions: list[str]
@@ -76,6 +77,13 @@ class Recommendation(BaseModel):
 class OpportunityResponse(BaseModel):
     customer_id: str
     opportunities: list[Recommendation]
+
+class ScenarioRequest(BaseModel):
+    changes: dict[str, Scalar]
+
+class ScenarioResponse(OpportunityResponse):
+    scenario_changes: dict[str, Scalar]
+    synthetic: bool = True
 
 class Explanation(BaseModel):
     product_id: str
@@ -116,6 +124,11 @@ class BusinessSummary(BaseModel):
     data_timestamp: str
     model_version: str
     caveat: str
+    portfolio_energy_kwh_year: float | None = None
+    paperless_customers: int
+    paperless_adoption_rate: float | None = None
+    mobile_app_active_customers: int
+    mean_monthly_digital_logins: float | None = None
 
 class Segment(BaseModel):
     region: str
@@ -125,6 +138,16 @@ class Segment(BaseModel):
 
 class Segments(BaseModel):
     items: list[Segment]
+
+class BusinessTrendPoint(BaseModel):
+    month: str
+    category: str
+    amount_gbp: float
+
+class BusinessTrends(BaseModel):
+    items: list[BusinessTrendPoint]
+    data_timestamp: str
+    caveat: str
 
 class BusinessOpportunities(BaseModel):
     total: int

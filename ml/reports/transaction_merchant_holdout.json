@@ -1,0 +1,324 @@
+{
+  "evaluation": "Fixed, predeclared merchant-name holdout chosen to retain every label in both partitions; no held-out merchant appears in training. This secondary synthetic diagnostic is not real-merchant generalization. Model is diagnostic only and does not replace the saved primary pipeline.",
+  "seed": 42,
+  "held_out_merchants": [
+    "Amazon",
+    "BP",
+    "British Gas",
+    "Halfords",
+    "Homebase",
+    "Thames Water",
+    "TfL"
+  ],
+  "train_transactions": 260034,
+  "test_transactions": 108289,
+  "train_merchants": 15,
+  "test_merchants": 7,
+  "merchant_overlap": [],
+  "categories": [
+    "Fuel",
+    "Electricity",
+    "Gas",
+    "Public Transport",
+    "Home Improvement",
+    "Automotive",
+    "Utilities",
+    "Other"
+  ],
+  "models": {
+    "tfidf_logistic": {
+      "classification_report": {
+        "Fuel": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 11293.0
+        },
+        "Electricity": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 19967.0
+        },
+        "Gas": {
+          "precision": 0.4341208027663769,
+          "recall": 0.8827626996122757,
+          "f1-score": 0.5820190641247833,
+          "support": 15217.0
+        },
+        "Public Transport": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 20013.0
+        },
+        "Home Improvement": {
+          "precision": 0.09555366128633101,
+          "recall": 1.0,
+          "f1-score": 0.17443903418503087,
+          "support": 6950.0
+        },
+        "Automotive": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 5275.0
+        },
+        "Utilities": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 14841.0
+        },
+        "Other": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 14733.0
+        },
+        "accuracy": 0.18822779783726878,
+        "macro avg": {
+          "precision": 0.06620930800658849,
+          "recall": 0.23534533745153446,
+          "f1-score": 0.09455726228872677,
+          "support": 108289.0
+        },
+        "weighted avg": {
+          "precision": 0.06713622068387332,
+          "recall": 0.18822779783726878,
+          "f1-score": 0.09298207007519502,
+          "support": 108289.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0,
+          0,
+          11293,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          17510,
+          0,
+          2457,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          13433,
+          0,
+          1784,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          20013,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          6950,
+          0,
+          0,
+          0
+        ],
+        [
+          4612,
+          0,
+          0,
+          0,
+          663,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          14841,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          14733,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "rule_baseline": {
+      "classification_report": {
+        "Fuel": {
+          "precision": 1.0,
+          "recall": 0.8812538740812893,
+          "f1-score": 0.9368792657095787,
+          "support": 11293.0
+        },
+        "Electricity": {
+          "precision": 1.0,
+          "recall": 0.8769469624881053,
+          "f1-score": 0.9344397897377058,
+          "support": 19967.0
+        },
+        "Gas": {
+          "precision": 1.0,
+          "recall": 0.8827626996122757,
+          "f1-score": 0.9377312390924957,
+          "support": 15217.0
+        },
+        "Public Transport": {
+          "precision": 1.0,
+          "recall": 0.8780792484884825,
+          "f1-score": 0.9350822114617144,
+          "support": 20013.0
+        },
+        "Home Improvement": {
+          "precision": 1.0,
+          "recall": 0.8771223021582734,
+          "f1-score": 0.9345393223976698,
+          "support": 6950.0
+        },
+        "Automotive": {
+          "precision": 1.0,
+          "recall": 0.8743127962085308,
+          "f1-score": 0.93294224739557,
+          "support": 5275.0
+        },
+        "Utilities": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 14841.0
+        },
+        "Other": {
+          "precision": 0.6069957152274226,
+          "recall": 1.0,
+          "f1-score": 0.7554416100499936,
+          "support": 14733.0
+        },
+        "accuracy": 0.9119116438419415,
+        "macro avg": {
+          "precision": 0.9508744644034278,
+          "recall": 0.9088097353796196,
+          "f1-score": 0.9208819607305909,
+          "support": 108289.0
+        },
+        "weighted avg": {
+          "precision": 0.9465307452506313,
+          "recall": 0.9119116438419415,
+          "f1-score": 0.9198407343234016,
+          "support": 108289.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          9952,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1341
+        ],
+        [
+          0,
+          17510,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2457
+        ],
+        [
+          0,
+          0,
+          13433,
+          0,
+          0,
+          0,
+          0,
+          1784
+        ],
+        [
+          0,
+          0,
+          0,
+          17573,
+          0,
+          0,
+          0,
+          2440
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          6096,
+          0,
+          0,
+          854
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          4612,
+          0,
+          663
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          14841,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          14733
+        ]
+      ]
+    }
+  }
+}

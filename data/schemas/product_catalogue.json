@@ -1,18 +1,34 @@
 {
   "GP01": {
     "name": "EV Finance",
-    "purpose": "Finance an EV purchase or replacement"
+    "purpose": "Finance an EV purchase or replacement",
+    "intended_use_cases": ["Replace a customer-reported petrol or diesel vehicle", "Purchase a first EV where a vehicle purchase use case is confirmed"],
+    "required_information": ["vehicle ownership", "current powertrain", "EV ownership", "replacement or purchase intent"],
+    "exclusions": ["Existing EV with no replacement use case", "Contradictory vehicle data requires review"],
+    "sustainability_metric": "Annual operational vehicle scenario comparison; lifecycle and financed emissions excluded"
   },
   "GP02": {
     "name": "Green Home Loan",
-    "purpose": "Finance owner-authorized home energy improvements"
+    "purpose": "Finance owner-authorized home energy improvements",
+    "intended_use_cases": ["Owner-authorized energy-efficiency improvements to an occupied property"],
+    "required_information": ["confirmed home ownership", "heating technology", "annual energy demand", "property assessment"],
+    "exclusions": ["Known non-homeowner", "Missing ownership requires review"],
+    "sustainability_metric": "Annual operational energy scenario estimate; engineering assessment required"
   },
   "GP03": {
     "name": "Solar Finance",
-    "purpose": "Finance suitable owner-authorized rooftop solar"
+    "purpose": "Finance suitable owner-authorized rooftop solar",
+    "intended_use_cases": ["Owner-authorized rooftop PV installation with a suitable roof and verified site yield"],
+    "required_information": ["confirmed ownership", "roof suitability", "location-specific PV yield", "system capacity", "annual electricity demand"],
+    "exclusions": ["Known non-homeowner", "Known unsuitable roof", "Missing site data means impact is unavailable"],
+    "sustainability_metric": "Annual PV generation and displaced grid electricity; no export credit"
   },
   "GP04": {
     "name": "Paperless Banking",
-    "purpose": "Switch existing paper statements to digital delivery"
+    "purpose": "Switch existing paper statements to digital delivery",
+    "intended_use_cases": ["Customer with paper statements who chooses digital delivery"],
+    "required_information": ["current statement delivery preference", "customer consent"],
+    "exclusions": ["Already paperless", "Unknown statement preference requires review"],
+    "sustainability_metric": "Illustrative annual pages avoided; carbon unavailable without verified lifecycle factors"
   }
 }

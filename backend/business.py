@@ -16,7 +16,22 @@ def summary(service):
             'propensity_histogram':np.histogram([r.propensity for r in rows],bins=[0,.2,.4,.6,.8,1.0000001])[0].tolist(),
             'priority_threshold':threshold,'priority_threshold_matches':sum(r.propensity>=threshold for r in potential),'calculable_impact_customers':sum(r.impact.impact_status=='ESTIMATED' for r in potential),
             'conditional_avoided_kgco2e':sum(carbon) if carbon else None,'conditional_avoided_pages':sum(pages) if pages else None})
-    return {'total_customers':len(service.by_customer),'unique_customers_with_opportunities':len({r.customer_id for r in all_rows if r.status=='POTENTIAL_OPPORTUNITY'}),'products':products,'data_timestamp':AS_OF,'model_version':VERSION,'caveat':'Priority thresholds were selected on validation data for statistical prioritization only. Matches are use-case screens, not financial approvals. Product matches overlap. Impact totals assume every calculable match adopts its scenario, are not probability-weighted or forecasts, and must not be added across overlapping products.'}
+    f=service.features
+    paperless=f.get('paper_statements_enabled')
+    paperless_known=paperless.notna()
+    paperless_count=int((paperless==0).sum()) if paperless is not None else 0
+    paperless_rate=paperless_count/int(paperless_known.sum()) if paperless is not None and paperless_known.any() else None
+    app=f.get('mobile_app_active')
+    return {'total_customers':len(service.by_customer),'unique_customers_with_opportunities':len({r.customer_id for r in all_rows if r.status=='POTENTIAL_OPPORTUNITY'}),'products':products,'data_timestamp':AS_OF,'model_version':VERSION,
+        'portfolio_energy_kwh_year':float(f[['electricity_kwh_year','gas_kwh_year']].sum(min_count=1).sum()) if {'electricity_kwh_year','gas_kwh_year'}.issubset(f.columns) else None,
+        'paperless_customers':paperless_count,'paperless_adoption_rate':paperless_rate,
+        'mobile_app_active_customers':int((app==1).sum()) if app is not None else 0,
+        'mean_monthly_digital_logins':float(f['digital_logins_month'].mean()) if 'digital_logins_month' in f else None,
+        'caveat':'Priority thresholds were selected on validation data for statistical prioritization only. Matches are use-case screens, not financial approvals. Product matches overlap. Impact totals assume every calculable match adopts its scenario, are not probability-weighted or forecasts, and must not be added across overlapping products. Energy totals are synthetic annual demand estimates; digital metrics describe synthetic statements/app activity.'}
+
+def trends(store):
+    return {'items':store.business_trends(),'data_timestamp':AS_OF,
+        'caveat':'Monthly synthetic debit spend from 2025 transaction records; descriptive history, not a forecast or causal trend.'}
 
 def segments(service):
     rows=[]

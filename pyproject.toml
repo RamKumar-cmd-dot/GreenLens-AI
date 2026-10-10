@@ -21,3 +21,6 @@ dev = ["pytest==9.1.1"]
 [tool.uv]
 # The application is run as modules from the repository root; it is not installed as a wheel.
 package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

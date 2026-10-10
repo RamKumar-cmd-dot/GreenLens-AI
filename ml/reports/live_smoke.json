@@ -33,11 +33,16 @@
       "status": 200
     },
     {
+      "path": "/business/trends",
+      "status": 200
+    },
+    {
       "path": "/business/opportunities?product_id=GP01&limit=2",
       "status": 200
     }
   ],
   "ev_exclusion_verified": true,
+  "scenario_rerun_verified": true,
   "transaction_classifier_verified": true,
   "explanation_sources": [
     "deterministic",
@@ -46,102 +51,110 @@
     "deterministic"
   ],
   "explanation_fallback_reasons": [
-    "Provider disabled or OPENAI_API_KEY not configured",
-    "Provider disabled or OPENAI_API_KEY not configured",
-    "Provider disabled or OPENAI_API_KEY not configured",
-    "Provider disabled or OPENAI_API_KEY not configured"
+    "Provider unavailable or malformed response",
+    "Provider unavailable or malformed response",
+    "Provider unavailable or malformed response",
+    "Provider unavailable or malformed response"
   ],
   "business_summary": {
     "total_customers": 5000,
-    "unique_customers_with_opportunities": 4926,
+    "unique_customers_with_opportunities": 4636,
     "products": [
       {
         "product_id": "GP01",
         "product_name": "EV Finance",
-        "potential_customers": 4684,
+        "potential_customers": 3463,
         "status_counts": {
-          "POTENTIAL_OPPORTUNITY": 4684,
-          "EXCLUDED": 313,
-          "NEEDS_REVIEW": 3
+          "NEEDS_REVIEW": 1235,
+          "POTENTIAL_OPPORTUNITY": 3463,
+          "EXCLUDED": 302
         },
         "propensity_histogram": [
-          3898,
-          929,
-          172,
-          1,
+          3870,
+          930,
+          200,
+          0,
           0
         ],
-        "high_potential_customers": 575,
-        "calculable_impact_customers": 3337,
-        "conditional_avoided_kgco2e": 5089491.810638835,
+        "priority_threshold": 0.24,
+        "priority_threshold_matches": 884,
+        "calculable_impact_customers": 3257,
+        "conditional_avoided_kgco2e": 4928949.412560782,
         "conditional_avoided_pages": null
       },
       {
         "product_id": "GP02",
         "product_name": "Green Home Loan",
-        "potential_customers": 2771,
+        "potential_customers": 2829,
         "status_counts": {
-          "EXCLUDED": 2061,
-          "POTENTIAL_OPPORTUNITY": 2771,
-          "INSUFFICIENT_DATA": 168
+          "EXCLUDED": 2028,
+          "POTENTIAL_OPPORTUNITY": 2829,
+          "INSUFFICIENT_DATA": 143
         },
         "propensity_histogram": [
-          3889,
-          1038,
-          71,
-          2,
+          3938,
+          1029,
+          33,
+          0,
           0
         ],
-        "high_potential_customers": 323,
-        "calculable_impact_customers": 2118,
-        "conditional_avoided_kgco2e": 460572.9289119999,
+        "priority_threshold": 0.1,
+        "priority_threshold_matches": 2415,
+        "calculable_impact_customers": 2182,
+        "conditional_avoided_kgco2e": 472001.8180479999,
         "conditional_avoided_pages": null
       },
       {
         "product_id": "GP03",
         "product_name": "Solar Finance",
-        "potential_customers": 1596,
+        "potential_customers": 1592,
         "status_counts": {
-          "EXCLUDED": 3302,
-          "POTENTIAL_OPPORTUNITY": 1596,
-          "INSUFFICIENT_DATA": 102
+          "EXCLUDED": 3323,
+          "POTENTIAL_OPPORTUNITY": 1592,
+          "INSUFFICIENT_DATA": 85
         },
         "propensity_histogram": [
-          4487,
-          436,
-          71,
-          6,
-          0
+          4305,
+          522,
+          116,
+          45,
+          12
         ],
-        "high_potential_customers": 195,
-        "calculable_impact_customers": 0,
-        "conditional_avoided_kgco2e": null,
+        "priority_threshold": 0.23,
+        "priority_threshold_matches": 529,
+        "calculable_impact_customers": 246,
+        "conditional_avoided_kgco2e": 66410.10972,
         "conditional_avoided_pages": null
       },
       {
         "product_id": "GP04",
         "product_name": "Paperless Banking",
-        "potential_customers": 2276,
+        "potential_customers": 2242,
         "status_counts": {
-          "POTENTIAL_OPPORTUNITY": 2276,
-          "EXCLUDED": 2724
+          "POTENTIAL_OPPORTUNITY": 2242,
+          "EXCLUDED": 2758
         },
         "propensity_histogram": [
-          2913,
-          909,
-          896,
-          281,
-          1
+          2866,
+          1613,
+          521,
+          0,
+          0
         ],
-        "high_potential_customers": 1705,
-        "calculable_impact_customers": 2276,
+        "priority_threshold": 0.28,
+        "priority_threshold_matches": 1722,
+        "calculable_impact_customers": 2242,
         "conditional_avoided_kgco2e": null,
-        "conditional_avoided_pages": 109248.0
+        "conditional_avoided_pages": 107616.0
       }
     ],
     "data_timestamp": "2026-01-01",
     "model_version": "greenlens-synthetic-v1",
-    "high_potential_threshold": 0.3,
-    "caveat": "Counts are use-case matches, not financial approvals. Product matches overlap. Impact totals assume every calculable match adopts its scenario, are not probability-weighted or forecasts, and must not be added across overlapping products."
+    "caveat": "Priority thresholds were selected on validation data for statistical prioritization only. Matches are use-case screens, not financial approvals. Product matches overlap. Impact totals assume every calculable match adopts its scenario, are not probability-weighted or forecasts, and must not be added across overlapping products. Energy totals are synthetic annual demand estimates; digital metrics describe synthetic statements/app activity.",
+    "portfolio_energy_kwh_year": 69580831.0,
+    "paperless_customers": 2758,
+    "paperless_adoption_rate": 0.5516,
+    "mobile_app_active_customers": 4760,
+    "mean_monthly_digital_logins": 15.0914
   }
 }

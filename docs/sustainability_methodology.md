@@ -37,7 +37,7 @@ Gas consumption assumes gross-CV metering. Electricity demand is unchanged. Othe
 
 ## Solar Finance
 
-Requires ownership, suitable roof, system kWp, location-specific yield in kWh/kWp/year, the yield's source and location, self-consumption ratio, and annual electricity demand. A region label and generic roof flag alone are inadequate, so **the existing dataset produces UNAVAILABLE solar impacts**.
+The engine produces a scenario for synthetic London records with known owner status, a synthetic suitable-roof flag and annual electricity demand. It uses a 4 kWp representative system (UK Government calls this a common installation size), a 919 kWh/kWp/year London reference yield modelled from PVGIS 5.3 at 35° south and 20% system losses, and a 0.42 annual self-consumption share from the UK Government CODE mid-terrace archetype. Inputs and source URLs are retained in `data/reference/solar_scenario.json` and each impact result. These are scenario defaults, not a customer-specific roof survey. For every other coarse region, missing site yield still returns UNAVAILABLE. The London source is [solar.org.uk's openly licensed PVGIS-derived dataset](https://solar.org.uk/data/uk-solar-generation-by-location/); JRC documents the PVGIS [grid-connected PV model](https://joint-research-centre.ec.europa.eu/photovoltaic-geographical-information-system-pvgis/using-pvgis-5/pvgis-5-tools/grid-connected-pv_en). The [Government CODE report](https://assets.publishing.service.gov.uk/media/632038fee90e077dba7762a6/CODE-Final-Report-WHOLE-FINAL-v20.pdf) provides the archetype self-consumption figure; the [Warm Homes Plan annex](https://www.gov.uk/government/publications/warm-homes-plan/warm-homes-plan-technical-annex) gives the representative 4 kW capacity.
 
 `generation = capacity_kWp × yield_kWh_per_kWp_year`
 
@@ -45,11 +45,15 @@ Requires ownership, suitable roof, system kWp, location-specific yield in kWh/kW
 
 `avoided = displaced_grid_kWh × electricity_factor`.
 
-No export credit. No invented sunshine/yield coefficients. The calculation path is tested with an explicitly fictional fixture, not treated as sourced customer data. Do not use fixture yield values in demonstrations as verified estimates.
+No export credit. For a London synthetic record: `generation = 4 kWp × 919 kWh/kWp/year`, `displaced_grid_kWh = min(annual_demand, generation × 0.42)`, and `avoided = displaced_grid_kWh × electricity_factor`. No production/roof assessment or customer-specific irradiance data is available. All output remains conditional and uncertain; no adoption is assumed.
 
 ## Paperless Banking
 
 Assumed one monthly statement with four printed pages: `avoided_pages = 12 × 4 = 48` if currently using paper and actually switching. Counts are illustrative, not observed. Already-paperless customers are excluded by recommendation rules. A reliable lifecycle factor for the actual statement/delivery chain is absent, so carbon impact stays null. Digital delivery and customer printing are unquantified.
+
+## Accounting relationship and claims boundary
+
+These demo values are counterfactual operational scenarios, **not** a conformant GHG Protocol project inventory or a financial institution's financed-emissions accounting. The [GHG Protocol Project Protocol](https://ghgprotocol.org/project-protocol) is the relevant project-accounting reference for comparing a project scenario with a baseline; this prototype borrows that baseline-versus-scenario framing only and does not implement its full additionality, monitoring, leakage, uncertainty or reporting requirements. [PCAF's Global GHG Accounting and Reporting Standard](https://carbonaccountingfinancials.com/standard) addresses financed emissions for financial activities. PCAF's 2025 update also provides separate guidance for financed avoided emissions and forward-looking metrics. Neither financed-emissions attribution nor portfolio avoided-emissions accounting is implemented here. Do not aggregate these estimates into Lloyds inventory or PCAF disclosures.
 
 ## Edge cases, exclusions and aggregation
 

@@ -1,6 +1,8 @@
 """Use-case screening only. The bank must supply authoritative credit/product rules."""
+import json
 import math
-CATALOGUE={'GP01':{'name':'EV Finance','purpose':'Finance an EV purchase or replacement'},'GP02':{'name':'Green Home Loan','purpose':'Finance owner-authorized home energy improvements'},'GP03':{'name':'Solar Finance','purpose':'Finance suitable owner-authorized rooftop solar'},'GP04':{'name':'Paperless Banking','purpose':'Switch existing paper statements to digital delivery'}}
+from ml.common import DATA
+CATALOGUE=json.loads((DATA/'schemas/product_catalogue.json').read_text())
 def missing(v): return v is None or (isinstance(v,float) and math.isnan(v))
 def screen(pid,f):
     exclusions=[]; unknown=[]

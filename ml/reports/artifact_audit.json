@@ -84,7 +84,7 @@
       "threshold": 0.28,
       "scored_customers": 5000,
       "min_propensity": 0.024716037220931564,
-      "max_propensity": 0.5423891962523864,
+      "max_propensity": 0.5423891962523862,
       "reload_within_tolerance": true,
       "training_imputer_verified": true,
       "verified_metrics": {

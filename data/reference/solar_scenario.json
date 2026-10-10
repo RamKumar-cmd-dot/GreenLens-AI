@@ -1,0 +1,30 @@
+{
+  "model": "London illustrative rooftop PV scenario",
+  "annual_yield": {
+    "region": "London",
+    "reference_location": "London",
+    "value_kwh_per_kwp_year": 919,
+    "system_loss_percent": 20,
+    "pitch_degrees": 35,
+    "orientation": "south",
+    "source": "solar.org.uk UK solar generation by location dataset, modelled from PVGIS 5.3 (European Commission JRC), CC BY 4.0",
+    "source_url": "https://solar.org.uk/data/uk-solar-generation-by-location/",
+    "source_accessed": "2026-10-11"
+  },
+  "system_capacity": {
+    "value_kwp": 4,
+    "source": "UK Government Warm Homes Plan Technical Annex; modelled domestic PV installation described as a common installation size",
+    "source_url": "https://www.gov.uk/government/publications/warm-homes-plan/warm-homes-plan-technical-annex"
+  },
+  "self_consumption_ratio": {
+    "value": 0.42,
+    "source": "UK Government Cost-Optimal Domestic Electrification study (CODE), mid-terrace cavity-wall archetype, annual PV-only self-consumption",
+    "source_url": "https://assets.publishing.service.gov.uk/media/632038fee90e077dba7762a6/CODE-Final-Report-WHOLE-FINAL-v20.pdf"
+  },
+  "limitations": [
+    "A London reference-location yield is used only for synthetic records labelled London; it is not a site-specific address or a yield for any other region.",
+    "Capacity and self-consumption are representative scenario assumptions, not customer observations; real values depend on roof area, pitch, orientation, shading, load profile and storage.",
+    "PVGIS-derived yield data source uses 20% system losses and a 35-degree south-facing setup; this does not describe every property.",
+    "Annual grid displacement is capped by estimated annual demand; exports receive no carbon credit."
+  ]
+}

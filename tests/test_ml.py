@@ -7,11 +7,14 @@ from ml.common import *
 from ml.inference import *
 from ml.eligibility import screen
 from ml.propensity_models import pipeline
+from ml.evaluate_merchant_holdout import merchant_split
 
 def test_inference_and_reload():
     result=predict_customer('C000000'); assert {p['product_id'] for p in result['opportunities']}==set(TARGETS)
     assert all(0<=p['propensity']<=1 and p['confidence'] is None for p in result['opportunities'])
     assert all(0<=p['threshold_screen']['threshold']<=1 for p in result['opportunities'])
+    assert all(p['reliability']['validation_score_band']['validation_customers']>0 for p in result['opportunities'])
+    assert all(p['reliability']['per_customer_confidence']=='unavailable' for p in result['opportunities'])
     assert all(p['threshold_screen']['above_threshold']==(p['propensity']>=p['threshold_screen']['threshold']) for p in result['opportunities'])
     json.dumps(result,allow_nan=False)
     load_models.cache_clear(); reloaded=predict_customer('C000000')
@@ -50,6 +53,14 @@ def test_training_reproducible(tmp_path):
         a=pipeline(kind).fit(df[FEATURES],y); b=pipeline(kind).fit(df[FEATURES],y)
         assert np.allclose(a.predict_proba(df[FEATURES]),b.predict_proba(df[FEATURES]),rtol=0,atol=1e-14)
         joblib.dump(a,tmp_path/'model'); assert np.allclose(a.predict_proba(df[FEATURES]),joblib.load(tmp_path/'model').predict_proba(df[FEATURES]))
+
+def test_merchant_holdout_has_no_merchant_overlap_and_preserves_all_categories():
+    tx=pd.read_csv(DATA/'synthetic/transactions.csv')
+    train_idx,test_idx=merchant_split(tx)
+    train=tx.loc[train_idx]; test=tx.loc[test_idx]
+    assert set(train.merchant_name).isdisjoint(test.merchant_name)
+    assert set(train.sustainability_category)==set(CATEGORIES)
+    assert set(test.sustainability_category)==set(CATEGORIES)
 
 def test_london_inspection_and_interval_summary(tmp_path,monkeypatch):
     import sys

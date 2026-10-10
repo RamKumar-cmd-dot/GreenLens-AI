@@ -29,6 +29,14 @@ def test_solar_and_paper():
     r=estimate('GP04',BASE)
     assert r.avoided_pages==48 and r.avoided_kgco2e is None
 
+def test_london_solar_scenario_has_documented_references_and_other_regions_fail_closed():
+    london=estimate('GP03',{**BASE,'region':'London','electricity_kwh_year':3000})
+    assert london.impact_status=='ESTIMATED'
+    assert london.generation_kwh==pytest.approx(4*919)
+    assert london.avoided_kgco2e==pytest.approx(min(3000,4*919*.42)*DEFAULT_FACTORS['electricity_kwh']['value'])
+    assert len(london.references)==3 and all(r.get('url') for r in london.references)
+    assert estimate('GP03',{**BASE,'region':'Wales','electricity_kwh_year':3000}).impact_status=='UNAVAILABLE'
+
 @pytest.mark.parametrize('pid,changes,status',[('GP01',{'owns_ev':1,'vehicle_type':'electric'},'EXCLUDED'),('GP02',{'homeowner':0},'EXCLUDED'),('GP03',{'homeowner':None},'INSUFFICIENT_DATA'),('GP04',{'paper_statements_enabled':0},'EXCLUDED'),('GP01',{'vehicle_type':None},'INSUFFICIENT_DATA')])
 def test_screening(pid,changes,status):
     r=assemble({**BASE,**changes},pid,.9,load_models()['metadata'])

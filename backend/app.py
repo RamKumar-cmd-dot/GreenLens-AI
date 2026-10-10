@@ -3,7 +3,7 @@ import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from backend.schemas import Health, Customer, CustomerPage, TransactionPage, OpportunityResponse, Insights, BusinessSummary, Segments, BusinessOpportunities, Status
+from backend.schemas import Health, Customer, CustomerPage, TransactionPage, OpportunityResponse, ScenarioRequest, ScenarioResponse, Insights, BusinessSummary, Segments, BusinessOpportunities, BusinessTrends, Status
 from backend import business
 from backend.explanations import explain
 from functools import lru_cache
@@ -57,6 +57,8 @@ def create_app(db_path=None):
         return lookup(store().transactions,customer_id,offset,limit,category)
     @app.get('/customers/{customer_id}/opportunities', response_model=OpportunityResponse)
     def opportunities(customer_id:str): return lookup(service().customer,customer_id)
+    @app.post('/customers/{customer_id}/scenario', response_model=ScenarioResponse)
+    def scenario(customer_id:str, body:ScenarioRequest): return lookup(service().scenario,customer_id,body.changes)
     @lru_cache(maxsize=256)
     def explanations(customer_id):
         with ThreadPoolExecutor(max_workers=4) as executor:
@@ -69,6 +71,8 @@ def create_app(db_path=None):
     def business_summary(): return business.summary(service())
     @app.get('/business/segments',response_model=Segments)
     def business_segments(): return business.segments(service())
+    @app.get('/business/trends',response_model=BusinessTrends)
+    def business_trends(): return business.trends(store())
     @app.get('/business/opportunities',response_model=BusinessOpportunities)
     def business_opportunities(product_id:str|None=None,status:Status='POTENTIAL_OPPORTUNITY',offset:int=Query(0,ge=0),limit:int=Query(25,ge=1,le=100),region:str|None=None,above_threshold:bool|None=None):
         if product_id and product_id not in ['GP01','GP02','GP03','GP04']: raise HTTPException(422,'Unknown product')

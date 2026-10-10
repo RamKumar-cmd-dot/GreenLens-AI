@@ -40,13 +40,40 @@ def reasons(pid,f):
     selected=[(code,k,f[k]) for code,k,fn in rules if not missing(f[k]) and fn(f[k])]
     return [r[0] for r in selected],{k:v for _,k,v in selected}
 
+def validation_score_band(pid, score):
+    """Return validation-cohort calibration context for the score's fixed bin.
+
+    This is not individual confidence. Wilson intervals describe the observed
+    synthetic validation adoption rate among customers in the same score band.
+    """
+    report_path=REPORTS/f'{pid}.json'
+    if not report_path.exists(): return None
+    report=json.loads(report_path.read_text())
+    bins=report.get('validation',{}).get(report.get('selected',''),{}).get('calibration_bins',[])
+    if not bins: return None
+    bin_width=0.1
+    selected=next((b for b in bins if float(b.get('lower',-1)) <= score < float(b.get('lower',-1))+bin_width),None)
+    if selected is None:
+        selected=max((b for b in bins if float(b.get('lower',-1))<=score),key=lambda b:b['lower'],default=None)
+    if selected is None: return None
+    n=int(selected['n']); rate=float(selected['observed_rate'])
+    if n<=0 or not 0<=rate<=1: return None
+    # Wilson score interval for the cohort's observed simulated take-up rate.
+    z=1.959963984540054; den=1+z*z/n
+    center=(rate+z*z/(2*n))/den
+    half=z*math.sqrt((rate*(1-rate)+z*z/(4*n))/n)/den
+    return {'score_band_lower':float(selected['lower']),'score_band_upper':min(1.0,float(selected['lower'])+bin_width),
+        'validation_customers':n,'mean_predicted_propensity':float(selected['mean_probability']),
+        'observed_simulated_takeup_rate':rate,'observed_rate_wilson_95_interval':[max(0.0,center-half),min(1.0,center+half)],
+        'interpretation':'Synthetic validation-cohort reliability for this score band; not per-customer confidence or real-customer validation.'}
+
 def predict_opportunities(customer_features):
     if not isinstance(customer_features,dict): raise ValueError('Expected one customer feature dictionary')
     f=normalize(customer_features); models=load_models(); frame=pd.DataFrame([f],columns=FEATURES); outputs=[]
     for pid in TARGETS:
         eligibility=screen(pid,f); codes,evidence=reasons(pid,f); meta=models['metadata']['products'][pid]
         propensity=float(models[pid].predict_proba(frame)[0,1]); threshold=models['thresholds'][pid]
-        outputs.append({'customer_id':customer_features.get('customer_id'),'product_id':pid,'propensity':propensity,'threshold_screen':{'threshold':threshold,'above_threshold':propensity>=threshold,'status':'ABOVE_VALIDATION_SELECTED_THRESHOLD' if propensity>=threshold else 'BELOW_VALIDATION_SELECTED_THRESHOLD','selection_basis':'validation-set F1; statistical prioritization only'},'confidence':None,'reliability':{'status':'synthetic_only_unvalidated_for_real_customers','per_customer_confidence':'unavailable','probability_status':meta['probability_status'],'validation_brier':meta['validation_brier'],'validation_ece':meta['validation_ece'],'missing_feature_count':sum(missing(v) for v in f.values())},'reason_codes':codes,'evidence':evidence,'data_timestamp':customer_features.get('data_timestamp'),'model_version':VERSION,'applicable_exclusions':eligibility['applicable_exclusions'],'eligibility':eligibility,'recommendation_status':'excluded' if eligibility['status']=='excluded' else 'needs_review' if eligibility['status']=='needs_review' else 'opportunity_pending_institutional_checks'})
+        outputs.append({'customer_id':customer_features.get('customer_id'),'product_id':pid,'propensity':propensity,'threshold_screen':{'threshold':threshold,'above_threshold':propensity>=threshold,'status':'ABOVE_VALIDATION_SELECTED_THRESHOLD' if propensity>=threshold else 'BELOW_VALIDATION_SELECTED_THRESHOLD','selection_basis':'validation-set F1; statistical prioritization only'},'confidence':None,'reliability':{'status':'synthetic_validation_score_band_only','per_customer_confidence':'unavailable','validation_score_band':validation_score_band(pid,propensity),'probability_status':meta['probability_status'],'validation_brier':meta['validation_brier'],'validation_ece':meta['validation_ece'],'missing_feature_count':sum(missing(f.get(k)) for k in FEATURES)},'reason_codes':codes,'evidence':evidence,'data_timestamp':customer_features.get('data_timestamp'),'model_version':VERSION,'applicable_exclusions':eligibility['applicable_exclusions'],'eligibility':eligibility,'recommendation_status':'excluded' if eligibility['status']=='excluded' else 'needs_review' if eligibility['status']=='needs_review' else 'opportunity_pending_institutional_checks'})
     return {'customer_id':customer_features.get('customer_id'),'opportunities':outputs,'carbon_inputs':{'annual_mileage_estimate':None if missing(f['annual_mileage_estimate']) else f['annual_mileage_estimate'],'electricity_kwh_year':None if missing(f['electricity_kwh_year']) else f['electricity_kwh_year'],'gas_kwh_year':None if missing(f['gas_kwh_year']) else f['gas_kwh_year'],'vehicle_type':None if missing(f['vehicle_type']) else f['vehicle_type'],'source':'synthetic estimates','period':'annual','emissions_calculated':False}}
 
 def predict_customer(customer_id):

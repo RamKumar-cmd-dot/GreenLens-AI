@@ -8,3 +8,8 @@ export async function classify(transaction){
  if(!response.ok)throw new Error(`Classification unavailable (${response.status}).`);
  return response.json();
 }
+export async function runScenario(customerId,changes){
+ const response=await fetch(`${import.meta.env.VITE_API_BASE || '/api'}/customers/${encodeURIComponent(customerId)}/scenario`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({changes})});
+ if(!response.ok)throw new Error(response.status===422?'Scenario inputs are invalid.':`Scenario unavailable (${response.status}).`);
+ return response.json();
+}
