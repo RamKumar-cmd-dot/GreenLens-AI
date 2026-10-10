@@ -97,7 +97,7 @@
         "test": {
           "metrics_match_saved_report": true,
           "n": 750,
-          "brier": 0.10738251078396106,
+          "brier": 0.10738251078396108,
           "roc_auc": 0.8657277805867627
         }
       }
