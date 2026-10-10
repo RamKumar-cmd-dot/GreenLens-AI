@@ -9,18 +9,15 @@ All customers, bank activity and product take-up labels are fictional. Propensit
 Python 3.12 is the artifact runtime recorded by the saved models. `requirements-ml.txt` pins scikit-learn 1.9.1 to match the serialized pipelines. The default pipeline is read-only: it verifies the checked-in/current cohort and saved artifacts and does not regenerate data or fit models.
 
 ```bash
-uv venv --python 3.12
-source .venv/bin/activate
-uv pip install -r requirements-api.txt
-python -m ml.run_pipeline
-python -m pytest -q
+uv sync
+uv run python -m ml.run_pipeline
+uv run pytest -q tests
 ```
 
 Start the API and UI in separate terminals:
 
 ```bash
-source .venv/bin/activate
-LLM_ENABLED=false uvicorn backend.app:app --reload
+LLM_ENABLED=false uv run uvicorn backend.app:app --reload
 ```
 
 ```bash

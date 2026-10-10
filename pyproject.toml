@@ -1,0 +1,23 @@
+[project]
+name = "greenlens-ai"
+version = "0.1.0"
+description = "Synthetic-data Lloyds Green Customer Insights hackathon prototype"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "anyio==4.9.0",
+    "fastapi==0.115.12",
+    "httpx==0.28.1",
+    "joblib==1.6.0",
+    "numpy==2.5.3",
+    "pandas==3.0.6",
+    "scikit-learn==1.9.1",
+    "starlette==0.46.2",
+    "uvicorn==0.54.0",
+]
+
+[dependency-groups]
+dev = ["pytest==9.1.1"]
+
+[tool.uv]
+# The application is run as modules from the repository root; it is not installed as a wheel.
+package = false
