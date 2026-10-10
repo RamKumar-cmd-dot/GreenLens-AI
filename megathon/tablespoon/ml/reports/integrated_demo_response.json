@@ -1,0 +1,252 @@
+{
+  "customer_id": "C000034",
+  "opportunities": [
+    {
+      "customer_id": "C000034",
+      "product_id": "GP01",
+      "product_name": "EV Finance",
+      "propensity": 0.22424035443645754,
+      "confidence": null,
+      "reliability": {
+        "target": "ev_finance_takeup",
+        "selected": "logistic",
+        "probability_status": "uncalibrated model estimate of simulated take-up",
+        "validation_brier": 0.11005412850849636,
+        "validation_ece": 0.01808897910071161,
+        "training_prevalence": 0.13485714285714287,
+        "status": "synthetic_only_unvalidated_for_real_customers",
+        "per_customer_confidence": "unavailable",
+        "missing_feature_count": 0
+      },
+      "status": "POTENTIAL_OPPORTUNITY",
+      "financial_eligibility": "NOT_ASSESSED",
+      "applicable_exclusions": [],
+      "missing_or_conflicting": [],
+      "reason_codes": [
+        "HIGH_FUEL_SPEND",
+        "EXISTING_PETROL_VEHICLE",
+        "HIGH_ANNUAL_MILEAGE"
+      ],
+      "evidence": {
+        "mean_monthly_fuel": 125.6625,
+        "vehicle_type": "petrol",
+        "annual_mileage_estimate": 10043.0
+      },
+      "data_timestamp": "2026-01-01",
+      "model_version": "greenlens-synthetic-v1",
+      "impact": {
+        "impact_status": "ESTIMATED",
+        "horizon": "annual",
+        "baseline_kgco2e": 2341.0164323234308,
+        "scenario_kgco2e": 514.94176749312,
+        "avoided_kgco2e": 1826.0746648303107,
+        "avoided_pages": null,
+        "generation_kwh": null,
+        "assumptions": [
+          "Annual distance = 10043 miles \u00d7 1.609344 km/mile.",
+          "Illustrative combustion efficiency = 7 litres/100 km; EV grid demand = 0.18 kWh/km including assumed charging losses.",
+          "Same annual distance; 2025 UK operational factors held constant. Efficiency defaults are scenario choices, not measured vehicle specifications."
+        ],
+        "factors": [
+          {
+            "value": 2.06916,
+            "unit": "kgCO2e/litre",
+            "year": 2025,
+            "geography": "UK",
+            "source_url": "https://assets.publishing.service.gov.uk/media/6846b6ea57f3515d9611f0dd/ghg-conversion-factors-2025-flat-format.xlsx",
+            "source_row": 283,
+            "source_id": "1_101_1017_8_1",
+            "source_label": "Scope 1 / Fuels / Liquid fuels / Petrol (average biofuel blend) / litres",
+            "publication_date": "2025-06-10"
+          },
+          {
+            "value": 0.177,
+            "unit": "kgCO2e/kWh",
+            "year": 2025,
+            "geography": "UK",
+            "source_url": "https://assets.publishing.service.gov.uk/media/6846b6ea57f3515d9611f0dd/ghg-conversion-factors-2025-flat-format.xlsx",
+            "source_row": 3066,
+            "source_id": "7_400_4000_5_1",
+            "source_label": "Scope 2 / UK electricity / Electricity generated / Electricity: UK / kWh / kWh",
+            "publication_date": "2025-06-10"
+          }
+        ],
+        "limitations": [
+          "Illustrative scenario, not a prediction of adoption or a guarantee.",
+          "Synthetic annual activity estimates; verify customer inputs.",
+          "Operational boundary excludes manufacturing, upstream fuel, grid losses and rebound effects.",
+          "Negative avoided emissions are retained and mean the scenario increases emissions."
+        ],
+        "reason": null,
+        "accounting": "Operational scenario estimate; not financed emissions or guaranteed realized savings"
+      },
+      "recommended_action": "Explore the illustrative scenario with your relationship team; institutional checks still apply."
+    },
+    {
+      "customer_id": "C000034",
+      "product_id": "GP02",
+      "product_name": "Green Home Loan",
+      "propensity": 0.3367692071005359,
+      "confidence": null,
+      "reliability": {
+        "target": "green_home_takeup",
+        "selected": "logistic",
+        "probability_status": "uncalibrated model estimate of simulated take-up",
+        "validation_brier": 0.07889774684633966,
+        "validation_ece": 0.01064698349050836,
+        "training_prevalence": 0.10628571428571429,
+        "status": "synthetic_only_unvalidated_for_real_customers",
+        "per_customer_confidence": "unavailable",
+        "missing_feature_count": 0
+      },
+      "status": "POTENTIAL_OPPORTUNITY",
+      "financial_eligibility": "NOT_ASSESSED",
+      "applicable_exclusions": [],
+      "missing_or_conflicting": [],
+      "reason_codes": [
+        "HOME_OWNER",
+        "HIGH_GAS_DEMAND"
+      ],
+      "evidence": {
+        "homeowner": 1.0,
+        "gas_kwh_year": 20498.0
+      },
+      "data_timestamp": "2026-01-01",
+      "model_version": "greenlens-synthetic-v1",
+      "impact": {
+        "impact_status": "ESTIMATED",
+        "horizon": "annual",
+        "baseline_kgco2e": 3750.31408,
+        "scenario_kgco2e": 3375.2826720000003,
+        "avoided_kgco2e": 375.03140799999983,
+        "avoided_pages": null,
+        "generation_kwh": null,
+        "assumptions": [
+          "Illustrative heating-controls/efficiency package reduces total annual gas demand by 10%; scenario assumption, not an engineering forecast.",
+          "Gas kWh assumed gross calorific value. No change to electricity use. An assessment must establish achievable reduction."
+        ],
+        "factors": [
+          {
+            "value": 0.18296,
+            "unit": "kgCO2e/kWh",
+            "year": 2025,
+            "geography": "UK",
+            "source_url": "https://assets.publishing.service.gov.uk/media/6846b6ea57f3515d9611f0dd/ghg-conversion-factors-2025-flat-format.xlsx",
+            "source_row": 83,
+            "source_id": "1_100_1004_6_1",
+            "source_label": "Scope 1 / Fuels / Gaseous fuels / Natural gas / kWh (Gross CV)",
+            "publication_date": "2025-06-10"
+          }
+        ],
+        "limitations": [
+          "Illustrative scenario, not a prediction of adoption or a guarantee.",
+          "Synthetic annual activity estimates; verify customer inputs.",
+          "Operational boundary excludes manufacturing, upstream fuel, grid losses and rebound effects.",
+          "Negative avoided emissions are retained and mean the scenario increases emissions."
+        ],
+        "reason": null,
+        "accounting": "Operational scenario estimate; not financed emissions or guaranteed realized savings"
+      },
+      "recommended_action": "Explore the illustrative scenario with your relationship team; institutional checks still apply."
+    },
+    {
+      "customer_id": "C000034",
+      "product_id": "GP03",
+      "product_name": "Solar Finance",
+      "propensity": 0.14905009998170882,
+      "confidence": null,
+      "reliability": {
+        "target": "solar_finance_takeup",
+        "selected": "logistic",
+        "probability_status": "uncalibrated model estimate of simulated take-up",
+        "validation_brier": 0.0515988238571295,
+        "validation_ece": 0.010087269114633923,
+        "training_prevalence": 0.06085714285714286,
+        "status": "synthetic_only_unvalidated_for_real_customers",
+        "per_customer_confidence": "unavailable",
+        "missing_feature_count": 0
+      },
+      "status": "POTENTIAL_OPPORTUNITY",
+      "financial_eligibility": "NOT_ASSESSED",
+      "applicable_exclusions": [],
+      "missing_or_conflicting": [],
+      "reason_codes": [
+        "HOME_OWNER",
+        "HIGH_ELECTRICITY_DEMAND"
+      ],
+      "evidence": {
+        "homeowner": 1.0,
+        "electricity_kwh_year": 4282.0
+      },
+      "data_timestamp": "2026-01-01",
+      "model_version": "greenlens-synthetic-v1",
+      "impact": {
+        "impact_status": "UNAVAILABLE",
+        "horizon": "annual",
+        "baseline_kgco2e": null,
+        "scenario_kgco2e": null,
+        "avoided_kgco2e": null,
+        "avoided_pages": null,
+        "generation_kwh": null,
+        "assumptions": [],
+        "factors": [],
+        "limitations": [],
+        "reason": "Requires verified capacity, location-specific annual yield and source, roof suitability, self-consumption ratio and annual demand. Region alone is insufficient.",
+        "accounting": "Operational scenario estimate; not financed emissions or guaranteed realized savings"
+      },
+      "recommended_action": "Explore the illustrative scenario with your relationship team; institutional checks still apply."
+    },
+    {
+      "customer_id": "C000034",
+      "product_id": "GP04",
+      "product_name": "Paperless Banking",
+      "propensity": 0.50855444449599,
+      "confidence": null,
+      "reliability": {
+        "target": "paperless_takeup",
+        "selected": "logistic",
+        "probability_status": "uncalibrated model estimate of simulated take-up",
+        "validation_brier": 0.11543429003397723,
+        "validation_ece": 0.03590049559114838,
+        "training_prevalence": 0.18371428571428572,
+        "status": "synthetic_only_unvalidated_for_real_customers",
+        "per_customer_confidence": "unavailable",
+        "missing_feature_count": 0
+      },
+      "status": "POTENTIAL_OPPORTUNITY",
+      "financial_eligibility": "NOT_ASSESSED",
+      "applicable_exclusions": [],
+      "missing_or_conflicting": [],
+      "reason_codes": [
+        "PAPER_STATEMENTS_ENABLED",
+        "HIGH_DIGITAL_ENGAGEMENT"
+      ],
+      "evidence": {
+        "paper_statements_enabled": 1.0,
+        "digital_logins_month": 23.0
+      },
+      "data_timestamp": "2026-01-01",
+      "model_version": "greenlens-synthetic-v1",
+      "impact": {
+        "impact_status": "ESTIMATED",
+        "horizon": "annual",
+        "baseline_kgco2e": null,
+        "scenario_kgco2e": null,
+        "avoided_kgco2e": null,
+        "avoided_pages": 48.0,
+        "generation_kwh": null,
+        "assumptions": [
+          "One monthly statement of four printed pages: 12 \u00d7 4 pages/year; illustrative frequency and length, not observed counts."
+        ],
+        "factors": [],
+        "limitations": [
+          "No carbon result: a verified statement lifecycle factor is unavailable. Digital-delivery impacts are not quantified.",
+          "Avoided pages assume an actual switch and no subsequent printing."
+        ],
+        "reason": null,
+        "accounting": "Operational scenario estimate; not financed emissions or guaranteed realized savings"
+      },
+      "recommended_action": "Explore the illustrative scenario with your relationship team; institutional checks still apply."
+    }
+  ]
+}

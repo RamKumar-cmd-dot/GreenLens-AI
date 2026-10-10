@@ -1,0 +1,307 @@
+{
+  "train": {
+    "n": 3500,
+    "positives": 213,
+    "negatives": 3287
+  },
+  "validation": {
+    "logistic": {
+      "n": 750,
+      "positives": 49,
+      "negatives": 701,
+      "roc_auc": 0.8870709482080992,
+      "average_precision": 0.301270991685162,
+      "precision": 0.6666666666666666,
+      "recall": 0.04081632653061224,
+      "f1": 0.07692307692307693,
+      "brier": 0.0515988238571295,
+      "threshold": 0.5,
+      "confusion_matrix": [
+        [
+          700,
+          1
+        ],
+        [
+          47,
+          2
+        ]
+      ],
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "n": 548,
+          "mean_probability": 0.00814043002538789,
+          "observed_rate": 0.014598540145985401
+        },
+        {
+          "lower": 0.1,
+          "n": 130,
+          "mean_probability": 0.14502764247221184,
+          "observed_rate": 0.15384615384615385
+        },
+        {
+          "lower": 0.2,
+          "n": 52,
+          "mean_probability": 0.24622147304721842,
+          "observed_rate": 0.2692307692307692
+        },
+        {
+          "lower": 0.30000000000000004,
+          "n": 10,
+          "mean_probability": 0.33570441108341587,
+          "observed_rate": 0.3
+        },
+        {
+          "lower": 0.4,
+          "n": 7,
+          "mean_probability": 0.4297363413819854,
+          "observed_rate": 0.2857142857142857
+        },
+        {
+          "lower": 0.5,
+          "n": 3,
+          "mean_probability": 0.560560296925718,
+          "observed_rate": 0.6666666666666666
+        }
+      ],
+      "ece": 0.010087269114633923
+    },
+    "random_forest": {
+      "n": 750,
+      "positives": 49,
+      "negatives": 701,
+      "roc_auc": 0.8875658680019797,
+      "average_precision": 0.35422920746078224,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "brier": 0.05199776591336432,
+      "threshold": 0.5,
+      "confusion_matrix": [
+        [
+          701,
+          0
+        ],
+        [
+          49,
+          0
+        ]
+      ],
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "n": 548,
+          "mean_probability": 0.025238132543004322,
+          "observed_rate": 0.014598540145985401
+        },
+        {
+          "lower": 0.1,
+          "n": 173,
+          "mean_probability": 0.13569582783080275,
+          "observed_rate": 0.1791907514450867
+        },
+        {
+          "lower": 0.2,
+          "n": 22,
+          "mean_probability": 0.24183330161340227,
+          "observed_rate": 0.22727272727272727
+        },
+        {
+          "lower": 0.30000000000000004,
+          "n": 7,
+          "mean_probability": 0.3211489675265508,
+          "observed_rate": 0.7142857142857143
+        }
+      ],
+      "ece": 0.021903211042195316
+    },
+    "constant_prevalence": {
+      "n": 750,
+      "positives": 49,
+      "negatives": 701,
+      "roc_auc": 0.5,
+      "average_precision": 0.06533333333333333,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "brier": 0.06108492517006804,
+      "threshold": 0.5,
+      "confusion_matrix": [
+        [
+          701,
+          0
+        ],
+        [
+          49,
+          0
+        ]
+      ],
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "n": 750,
+          "mean_probability": 0.06085714285714284,
+          "observed_rate": 0.06533333333333333
+        }
+      ],
+      "ece": 0.004476190476190488
+    }
+  },
+  "test": {
+    "constant_prevalence": {
+      "n": 750,
+      "positives": 54,
+      "negatives": 696,
+      "roc_auc": 0.5,
+      "average_precision": 0.072,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "brier": 0.06694016326530615,
+      "threshold": 0.5,
+      "confusion_matrix": [
+        [
+          696,
+          0
+        ],
+        [
+          54,
+          0
+        ]
+      ],
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "n": 750,
+          "mean_probability": 0.06085714285714284,
+          "observed_rate": 0.072
+        }
+      ],
+      "ece": 0.011142857142857156
+    },
+    "logistic": {
+      "n": 750,
+      "positives": 54,
+      "negatives": 696,
+      "roc_auc": 0.9041081311196253,
+      "average_precision": 0.3664900442618329,
+      "precision": 0.6,
+      "recall": 0.05555555555555555,
+      "f1": 0.1016949152542373,
+      "brier": 0.05340767588190629,
+      "threshold": 0.5,
+      "confusion_matrix": [
+        [
+          694,
+          2
+        ],
+        [
+          51,
+          3
+        ]
+      ],
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "n": 545,
+          "mean_probability": 0.007905270988115777,
+          "observed_rate": 0.009174311926605505
+        },
+        {
+          "lower": 0.1,
+          "n": 114,
+          "mean_probability": 0.13962070535884413,
+          "observed_rate": 0.17543859649122806
+        },
+        {
+          "lower": 0.2,
+          "n": 49,
+          "mean_probability": 0.23570098755536517,
+          "observed_rate": 0.24489795918367346
+        },
+        {
+          "lower": 0.30000000000000004,
+          "n": 21,
+          "mean_probability": 0.3454969934172455,
+          "observed_rate": 0.38095238095238093
+        },
+        {
+          "lower": 0.4,
+          "n": 16,
+          "mean_probability": 0.44025747377569907,
+          "observed_rate": 0.375
+        },
+        {
+          "lower": 0.5,
+          "n": 2,
+          "mean_probability": 0.5298440115641556,
+          "observed_rate": 0.5
+        },
+        {
+          "lower": 0.6000000000000001,
+          "n": 1,
+          "mean_probability": 0.6436454365240167,
+          "observed_rate": 1.0
+        },
+        {
+          "lower": 0.7000000000000001,
+          "n": 2,
+          "mean_probability": 0.7520926706577868,
+          "observed_rate": 0.5
+        }
+      ],
+      "ece": 0.010579238875899566
+    },
+    "random_forest": {
+      "n": 750,
+      "positives": 54,
+      "negatives": 696,
+      "roc_auc": 0.8883833546189868,
+      "average_precision": 0.3105257644220767,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "brier": 0.05705916968134035,
+      "threshold": 0.5,
+      "confusion_matrix": [
+        [
+          696,
+          0
+        ],
+        [
+          54,
+          0
+        ]
+      ],
+      "calibration_bins": [
+        {
+          "lower": 0.0,
+          "n": 551,
+          "mean_probability": 0.02597347555012215,
+          "observed_rate": 0.014519056261343012
+        },
+        {
+          "lower": 0.1,
+          "n": 148,
+          "mean_probability": 0.13430122382437107,
+          "observed_rate": 0.20270270270270271
+        },
+        {
+          "lower": 0.2,
+          "n": 38,
+          "mean_probability": 0.24920810650465333,
+          "observed_rate": 0.2631578947368421
+        },
+        {
+          "lower": 0.30000000000000004,
+          "n": 13,
+          "mean_probability": 0.32154955912503286,
+          "observed_rate": 0.46153846153846156
+        }
+      ],
+      "ece": 0.025046335448410843
+    }
+  },
+  "selected": "logistic",
+  "selection": "lowest validation Brier; held-out test never used for selection"
+}

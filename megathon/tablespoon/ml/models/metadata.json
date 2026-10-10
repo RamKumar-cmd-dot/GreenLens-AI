@@ -1,0 +1,71 @@
+{
+  "version": "greenlens-synthetic-v1",
+  "seed": 42,
+  "as_of": "2026-01-01",
+  "python": "3.13.13",
+  "sklearn": "1.7.2",
+  "features": [
+    "monthly_income_gbp",
+    "mean_monthly_fuel",
+    "mean_monthly_electricity",
+    "mean_monthly_gas",
+    "mean_monthly_public_transport",
+    "mean_monthly_home_improvement",
+    "fuel_trend",
+    "homeowner",
+    "vehicle_ownership",
+    "owns_ev",
+    "annual_mileage_estimate",
+    "electricity_kwh_year",
+    "gas_kwh_year",
+    "digital_logins_month",
+    "mobile_app_active",
+    "paper_statements_enabled",
+    "digital_transaction_ratio",
+    "existing_mortgage",
+    "existing_vehicle_loan",
+    "roof_suitable",
+    "replacement_intent",
+    "household_size",
+    "age_band",
+    "region",
+    "employment_status",
+    "property_type",
+    "vehicle_type",
+    "heating_technology"
+  ],
+  "products": {
+    "GP01": {
+      "target": "ev_finance_takeup",
+      "selected": "logistic",
+      "probability_status": "uncalibrated model estimate of simulated take-up",
+      "validation_brier": 0.11005412850849636,
+      "validation_ece": 0.01808897910071161,
+      "training_prevalence": 0.13485714285714287
+    },
+    "GP02": {
+      "target": "green_home_takeup",
+      "selected": "logistic",
+      "probability_status": "uncalibrated model estimate of simulated take-up",
+      "validation_brier": 0.07889774684633966,
+      "validation_ece": 0.01064698349050836,
+      "training_prevalence": 0.10628571428571429
+    },
+    "GP03": {
+      "target": "solar_finance_takeup",
+      "selected": "logistic",
+      "probability_status": "uncalibrated model estimate of simulated take-up",
+      "validation_brier": 0.0515988238571295,
+      "validation_ece": 0.010087269114633923,
+      "training_prevalence": 0.06085714285714286
+    },
+    "GP04": {
+      "target": "paperless_takeup",
+      "selected": "logistic",
+      "probability_status": "uncalibrated model estimate of simulated take-up",
+      "validation_brier": 0.11543429003397723,
+      "validation_ece": 0.03590049559114838,
+      "training_prevalence": 0.18371428571428572
+    }
+  }
+}

@@ -1,0 +1,606 @@
+{
+  "categories": [
+    "Fuel",
+    "Electricity",
+    "Gas",
+    "Public Transport",
+    "Home Improvement",
+    "Automotive",
+    "Utilities",
+    "Other"
+  ],
+  "train_transactions": 60000,
+  "limitation": "Known synthetic merchant vocabulary; does not establish unseen-merchant generalization.",
+  "validation": {
+    "tfidf_logistic": {
+      "classification_report": {
+        "Fuel": {
+          "precision": 0.9873454973513832,
+          "recall": 0.9640804597701149,
+          "f1-score": 0.9755742948531549,
+          "support": 6960.0
+        },
+        "Electricity": {
+          "precision": 0.9119464991387172,
+          "recall": 1.0,
+          "f1-score": 0.9539456250993693,
+          "support": 9000.0
+        },
+        "Gas": {
+          "precision": 1.0,
+          "recall": 0.9160919540229885,
+          "f1-score": 0.9562087582483503,
+          "support": 6960.0
+        },
+        "Public Transport": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 9000.0
+        },
+        "Home Improvement": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 3064.0
+        },
+        "Automotive": {
+          "precision": 1.0,
+          "recall": 0.9652945924132365,
+          "f1-score": 0.9823408624229979,
+          "support": 2478.0
+        },
+        "Utilities": {
+          "precision": 1.0,
+          "recall": 0.9683333333333334,
+          "f1-score": 0.9839119390347163,
+          "support": 9000.0
+        },
+        "Other": {
+          "precision": 0.972972972972973,
+          "recall": 1.0,
+          "f1-score": 0.9863013698630136,
+          "support": 9000.0
+        },
+        "accuracy": 0.9782734124265263,
+        "macro avg": {
+          "precision": 0.9840331211828841,
+          "recall": 0.9767250424424592,
+          "f1-score": 0.9797853561902002,
+          "support": 55462.0
+        },
+        "weighted avg": {
+          "precision": 0.9797374763003649,
+          "recall": 0.9782734124265263,
+          "f1-score": 0.9783433902968618,
+          "support": 55462.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          6710,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          250
+        ],
+        [
+          0,
+          9000,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          584,
+          6376,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          9000,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3064,
+          0,
+          0,
+          0
+        ],
+        [
+          86,
+          0,
+          0,
+          0,
+          0,
+          2392,
+          0,
+          0
+        ],
+        [
+          0,
+          285,
+          0,
+          0,
+          0,
+          0,
+          8715,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          9000
+        ]
+      ]
+    },
+    "rule_baseline": {
+      "classification_report": {
+        "Fuel": {
+          "precision": 1.0,
+          "recall": 0.8714080459770115,
+          "f1-score": 0.9312859884836853,
+          "support": 6960.0
+        },
+        "Electricity": {
+          "precision": 1.0,
+          "recall": 0.8811111111111111,
+          "f1-score": 0.9367985823981099,
+          "support": 9000.0
+        },
+        "Gas": {
+          "precision": 1.0,
+          "recall": 0.8738505747126437,
+          "f1-score": 0.9326790369575219,
+          "support": 6960.0
+        },
+        "Public Transport": {
+          "precision": 1.0,
+          "recall": 0.8847777777777778,
+          "f1-score": 0.9388669457053587,
+          "support": 9000.0
+        },
+        "Home Improvement": {
+          "precision": 1.0,
+          "recall": 0.8847911227154047,
+          "f1-score": 0.9388744588744589,
+          "support": 3064.0
+        },
+        "Automotive": {
+          "precision": 1.0,
+          "recall": 0.8857949959644875,
+          "f1-score": 0.9394393323346887,
+          "support": 2478.0
+        },
+        "Utilities": {
+          "precision": 1.0,
+          "recall": 0.9083333333333333,
+          "f1-score": 0.9519650655021834,
+          "support": 9000.0
+        },
+        "Other": {
+          "precision": 0.6275712990725891,
+          "recall": 1.0,
+          "f1-score": 0.7711751852962598,
+          "support": 9000.0
+        },
+        "accuracy": 0.9036998305145866,
+        "macro avg": {
+          "precision": 0.9534464123840736,
+          "recall": 0.8987583701989712,
+          "f1-score": 0.9176355744440333,
+          "support": 55462.0
+        },
+        "weighted avg": {
+          "precision": 0.9395647775351287,
+          "recall": 0.9036998305145866,
+          "f1-score": 0.9117430059266654,
+          "support": 55462.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          6065,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          895
+        ],
+        [
+          0,
+          7930,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1070
+        ],
+        [
+          0,
+          0,
+          6082,
+          0,
+          0,
+          0,
+          0,
+          878
+        ],
+        [
+          0,
+          0,
+          0,
+          7963,
+          0,
+          0,
+          0,
+          1037
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2711,
+          0,
+          0,
+          353
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          2195,
+          0,
+          283
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          8175,
+          825
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          9000
+        ]
+      ]
+    }
+  },
+  "test": {
+    "tfidf_logistic": {
+      "classification_report": {
+        "Fuel": {
+          "precision": 0.9871130202932898,
+          "recall": 0.9691681210005817,
+          "f1-score": 0.9780582666764511,
+          "support": 6876.0
+        },
+        "Electricity": {
+          "precision": 0.9159373091797273,
+          "recall": 1.0,
+          "f1-score": 0.9561245086582386,
+          "support": 9000.0
+        },
+        "Gas": {
+          "precision": 1.0,
+          "recall": 0.9182805164319249,
+          "f1-score": 0.9573996175908221,
+          "support": 6816.0
+        },
+        "Public Transport": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 9000.0
+        },
+        "Home Improvement": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 3148.0
+        },
+        "Automotive": {
+          "precision": 1.0,
+          "recall": 0.9630102040816326,
+          "f1-score": 0.9811565951916829,
+          "support": 2352.0
+        },
+        "Utilities": {
+          "precision": 1.0,
+          "recall": 0.9701111111111111,
+          "f1-score": 0.9848288308612035,
+          "support": 9000.0
+        },
+        "Other": {
+          "precision": 0.9769865392965696,
+          "recall": 1.0,
+          "f1-score": 0.9883593235229519,
+          "support": 9000.0
+        },
+        "accuracy": 0.9796166111030584,
+        "macro avg": {
+          "precision": 0.9850046085961983,
+          "recall": 0.9775712440781563,
+          "f1-score": 0.9807408928126689,
+          "support": 55192.0
+        },
+        "weighted avg": {
+          "precision": 0.9809338991850871,
+          "recall": 0.9796166111030584,
+          "f1-score": 0.9796756543419102,
+          "support": 55192.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          6664,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          212
+        ],
+        [
+          0,
+          9000,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          557,
+          6259,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          9000,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3148,
+          0,
+          0,
+          0
+        ],
+        [
+          87,
+          0,
+          0,
+          0,
+          0,
+          2265,
+          0,
+          0
+        ],
+        [
+          0,
+          269,
+          0,
+          0,
+          0,
+          0,
+          8731,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          9000
+        ]
+      ]
+    },
+    "rule_baseline": {
+      "classification_report": {
+        "Fuel": {
+          "precision": 1.0,
+          "recall": 0.8819080860965678,
+          "f1-score": 0.9372488408037094,
+          "support": 6876.0
+        },
+        "Electricity": {
+          "precision": 1.0,
+          "recall": 0.8817777777777778,
+          "f1-score": 0.9371752479924421,
+          "support": 9000.0
+        },
+        "Gas": {
+          "precision": 1.0,
+          "recall": 0.8767605633802817,
+          "f1-score": 0.9343339587242027,
+          "support": 6816.0
+        },
+        "Public Transport": {
+          "precision": 1.0,
+          "recall": 0.8755555555555555,
+          "f1-score": 0.933649289099526,
+          "support": 9000.0
+        },
+        "Home Improvement": {
+          "precision": 1.0,
+          "recall": 0.8796060991105463,
+          "f1-score": 0.9359472705763056,
+          "support": 3148.0
+        },
+        "Automotive": {
+          "precision": 1.0,
+          "recall": 0.8847789115646258,
+          "f1-score": 0.9388675840288744,
+          "support": 2352.0
+        },
+        "Utilities": {
+          "precision": 1.0,
+          "recall": 0.9094444444444445,
+          "f1-score": 0.952574919988362,
+          "support": 9000.0
+        },
+        "Other": {
+          "precision": 0.6293266205160478,
+          "recall": 1.0,
+          "f1-score": 0.772499034376207,
+          "support": 9000.0
+        },
+        "accuracy": 0.9039534715176113,
+        "macro avg": {
+          "precision": 0.953665827564506,
+          "recall": 0.8987289297412249,
+          "f1-score": 0.9177870181987037,
+          "support": 55192.0
+        },
+        "weighted avg": {
+          "precision": 0.93955536281788,
+          "recall": 0.9039534715176113,
+          "f1-score": 0.9119185440018378,
+          "support": 55192.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          6064,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          812
+        ],
+        [
+          0,
+          7936,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1064
+        ],
+        [
+          0,
+          0,
+          5976,
+          0,
+          0,
+          0,
+          0,
+          840
+        ],
+        [
+          0,
+          0,
+          0,
+          7880,
+          0,
+          0,
+          0,
+          1120
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2769,
+          0,
+          0,
+          379
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          2081,
+          0,
+          271
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          8185,
+          815
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          9000
+        ]
+      ]
+    }
+  }
+}

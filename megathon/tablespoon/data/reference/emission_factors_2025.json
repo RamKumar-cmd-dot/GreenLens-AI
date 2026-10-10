@@ -1,0 +1,50 @@
+{
+  "source": "DESNZ UK Government GHG Conversion Factors 2025",
+  "workbook_sha256": "8bfdb45b81ec4a88e3bdf4584637330f62e6bd09ce1940e654c5d7b7f736de94",
+  "factors": {
+    "gas_kwh": {
+      "value": 0.18296,
+      "unit": "kgCO2e/kWh",
+      "year": 2025,
+      "geography": "UK",
+      "source_url": "https://assets.publishing.service.gov.uk/media/6846b6ea57f3515d9611f0dd/ghg-conversion-factors-2025-flat-format.xlsx",
+      "source_row": 83,
+      "source_id": "1_100_1004_6_1",
+      "source_label": "Scope 1 / Fuels / Gaseous fuels / Natural gas / kWh (Gross CV)",
+      "publication_date": "2025-06-10"
+    },
+    "diesel_litre": {
+      "value": 2.57082,
+      "unit": "kgCO2e/litre",
+      "year": 2025,
+      "geography": "UK",
+      "source_url": "https://assets.publishing.service.gov.uk/media/6846b6ea57f3515d9611f0dd/ghg-conversion-factors-2025-flat-format.xlsx",
+      "source_row": 187,
+      "source_id": "1_101_1011_8_1",
+      "source_label": "Scope 1 / Fuels / Liquid fuels / Diesel (average biofuel blend) / litres",
+      "publication_date": "2025-06-10"
+    },
+    "petrol_litre": {
+      "value": 2.06916,
+      "unit": "kgCO2e/litre",
+      "year": 2025,
+      "geography": "UK",
+      "source_url": "https://assets.publishing.service.gov.uk/media/6846b6ea57f3515d9611f0dd/ghg-conversion-factors-2025-flat-format.xlsx",
+      "source_row": 283,
+      "source_id": "1_101_1017_8_1",
+      "source_label": "Scope 1 / Fuels / Liquid fuels / Petrol (average biofuel blend) / litres",
+      "publication_date": "2025-06-10"
+    },
+    "electricity_kwh": {
+      "value": 0.177,
+      "unit": "kgCO2e/kWh",
+      "year": 2025,
+      "geography": "UK",
+      "source_url": "https://assets.publishing.service.gov.uk/media/6846b6ea57f3515d9611f0dd/ghg-conversion-factors-2025-flat-format.xlsx",
+      "source_row": 3066,
+      "source_id": "7_400_4000_5_1",
+      "source_label": "Scope 2 / UK electricity / Electricity generated / Electricity: UK / kWh / kWh",
+      "publication_date": "2025-06-10"
+    }
+  }
+}

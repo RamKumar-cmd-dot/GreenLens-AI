@@ -1,0 +1,18 @@
+{
+  "london_profile_source": null,
+  "seed": 42,
+  "customers": 5000,
+  "as_of": "2026-01-01",
+  "observation_start": "2025-01-01",
+  "outcome_window": [
+    "2026-01-01",
+    "2026-06-30"
+  ],
+  "source": "entirely synthetic; not real decisions",
+  "prevalence": {
+    "ev_finance_takeup": 0.1346,
+    "green_home_takeup": 0.1042,
+    "solar_finance_takeup": 0.0632,
+    "paperless_takeup": 0.1878
+  }
+}

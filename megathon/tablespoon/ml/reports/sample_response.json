@@ -1,0 +1,144 @@
+{
+  "customer_id": "C000025",
+  "opportunities": [
+    {
+      "customer_id": "C000025",
+      "product_id": "GP01",
+      "propensity": 0.2003173705837605,
+      "confidence": null,
+      "reliability": {
+        "status": "synthetic_only_unvalidated_for_real_customers",
+        "per_customer_confidence": "unavailable",
+        "probability_status": "uncalibrated model estimate of simulated take-up",
+        "validation_brier": 0.11005412850849636,
+        "validation_ece": 0.01808897910071161,
+        "missing_feature_count": 1
+      },
+      "reason_codes": [
+        "HIGH_FUEL_SPEND",
+        "EXISTING_PETROL_VEHICLE"
+      ],
+      "evidence": {
+        "mean_monthly_fuel": 129.04999999999998,
+        "vehicle_type": "petrol"
+      },
+      "data_timestamp": "2026-01-01",
+      "model_version": "greenlens-synthetic-v1",
+      "applicable_exclusions": [],
+      "eligibility": {
+        "status": "use_case_match",
+        "applicable_exclusions": [],
+        "missing_or_conflicting": [],
+        "financial_eligibility": "not_assessed",
+        "institutional_rules_required": true
+      },
+      "recommendation_status": "opportunity_pending_institutional_checks"
+    },
+    {
+      "customer_id": "C000025",
+      "product_id": "GP02",
+      "propensity": 0.1435142084639635,
+      "confidence": null,
+      "reliability": {
+        "status": "synthetic_only_unvalidated_for_real_customers",
+        "per_customer_confidence": "unavailable",
+        "probability_status": "uncalibrated model estimate of simulated take-up",
+        "validation_brier": 0.07889774684633966,
+        "validation_ece": 0.01064698349050836,
+        "missing_feature_count": 1
+      },
+      "reason_codes": [
+        "HOME_OWNER"
+      ],
+      "evidence": {
+        "homeowner": 1.0
+      },
+      "data_timestamp": "2026-01-01",
+      "model_version": "greenlens-synthetic-v1",
+      "applicable_exclusions": [],
+      "eligibility": {
+        "status": "use_case_match",
+        "applicable_exclusions": [],
+        "missing_or_conflicting": [],
+        "financial_eligibility": "not_assessed",
+        "institutional_rules_required": true
+      },
+      "recommendation_status": "opportunity_pending_institutional_checks"
+    },
+    {
+      "customer_id": "C000025",
+      "product_id": "GP03",
+      "propensity": 0.3368266519745018,
+      "confidence": null,
+      "reliability": {
+        "status": "synthetic_only_unvalidated_for_real_customers",
+        "per_customer_confidence": "unavailable",
+        "probability_status": "uncalibrated model estimate of simulated take-up",
+        "validation_brier": 0.0515988238571295,
+        "validation_ece": 0.010087269114633923,
+        "missing_feature_count": 1
+      },
+      "reason_codes": [
+        "HOME_OWNER",
+        "HIGH_ELECTRICITY_DEMAND"
+      ],
+      "evidence": {
+        "homeowner": 1.0,
+        "electricity_kwh_year": 7177.0
+      },
+      "data_timestamp": "2026-01-01",
+      "model_version": "greenlens-synthetic-v1",
+      "applicable_exclusions": [],
+      "eligibility": {
+        "status": "use_case_match",
+        "applicable_exclusions": [],
+        "missing_or_conflicting": [],
+        "financial_eligibility": "not_assessed",
+        "institutional_rules_required": true
+      },
+      "recommendation_status": "opportunity_pending_institutional_checks"
+    },
+    {
+      "customer_id": "C000025",
+      "product_id": "GP04",
+      "propensity": 0.5044105984617273,
+      "confidence": null,
+      "reliability": {
+        "status": "synthetic_only_unvalidated_for_real_customers",
+        "per_customer_confidence": "unavailable",
+        "probability_status": "uncalibrated model estimate of simulated take-up",
+        "validation_brier": 0.11543429003397723,
+        "validation_ece": 0.03590049559114838,
+        "missing_feature_count": 1
+      },
+      "reason_codes": [
+        "PAPER_STATEMENTS_ENABLED",
+        "HIGH_DIGITAL_ENGAGEMENT"
+      ],
+      "evidence": {
+        "paper_statements_enabled": 1.0,
+        "digital_logins_month": 24.0
+      },
+      "data_timestamp": "2026-01-01",
+      "model_version": "greenlens-synthetic-v1",
+      "applicable_exclusions": [],
+      "eligibility": {
+        "status": "use_case_match",
+        "applicable_exclusions": [],
+        "missing_or_conflicting": [],
+        "financial_eligibility": "not_assessed",
+        "institutional_rules_required": true
+      },
+      "recommendation_status": "opportunity_pending_institutional_checks"
+    }
+  ],
+  "carbon_inputs": {
+    "annual_mileage_estimate": null,
+    "electricity_kwh_year": 7177.0,
+    "gas_kwh_year": 0.0,
+    "vehicle_type": "petrol",
+    "source": "synthetic estimates",
+    "period": "annual",
+    "emissions_calculated": false
+  }
+}

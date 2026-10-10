@@ -1,0 +1,147 @@
+{
+  "checks": [
+    {
+      "path": "/health",
+      "status": 200
+    },
+    {
+      "path": "/customers?limit=2",
+      "status": 200
+    },
+    {
+      "path": "/customers/C000034",
+      "status": 200
+    },
+    {
+      "path": "/customers/C000034/transactions?limit=2",
+      "status": 200
+    },
+    {
+      "path": "/customers/C000034/opportunities",
+      "status": 200
+    },
+    {
+      "path": "/customers/C000034/insights",
+      "status": 200
+    },
+    {
+      "path": "/business/summary",
+      "status": 200
+    },
+    {
+      "path": "/business/segments",
+      "status": 200
+    },
+    {
+      "path": "/business/opportunities?product_id=GP01&limit=2",
+      "status": 200
+    }
+  ],
+  "ev_exclusion_verified": true,
+  "transaction_classifier_verified": true,
+  "explanation_sources": [
+    "deterministic",
+    "deterministic",
+    "deterministic",
+    "deterministic"
+  ],
+  "explanation_fallback_reasons": [
+    "Provider disabled or OPENAI_API_KEY not configured",
+    "Provider disabled or OPENAI_API_KEY not configured",
+    "Provider disabled or OPENAI_API_KEY not configured",
+    "Provider disabled or OPENAI_API_KEY not configured"
+  ],
+  "business_summary": {
+    "total_customers": 5000,
+    "unique_customers_with_opportunities": 4926,
+    "products": [
+      {
+        "product_id": "GP01",
+        "product_name": "EV Finance",
+        "potential_customers": 4684,
+        "status_counts": {
+          "POTENTIAL_OPPORTUNITY": 4684,
+          "EXCLUDED": 313,
+          "NEEDS_REVIEW": 3
+        },
+        "propensity_histogram": [
+          3898,
+          929,
+          172,
+          1,
+          0
+        ],
+        "high_potential_customers": 575,
+        "calculable_impact_customers": 3337,
+        "conditional_avoided_kgco2e": 5089491.810638835,
+        "conditional_avoided_pages": null
+      },
+      {
+        "product_id": "GP02",
+        "product_name": "Green Home Loan",
+        "potential_customers": 2771,
+        "status_counts": {
+          "EXCLUDED": 2061,
+          "POTENTIAL_OPPORTUNITY": 2771,
+          "INSUFFICIENT_DATA": 168
+        },
+        "propensity_histogram": [
+          3889,
+          1038,
+          71,
+          2,
+          0
+        ],
+        "high_potential_customers": 323,
+        "calculable_impact_customers": 2118,
+        "conditional_avoided_kgco2e": 460572.9289119999,
+        "conditional_avoided_pages": null
+      },
+      {
+        "product_id": "GP03",
+        "product_name": "Solar Finance",
+        "potential_customers": 1596,
+        "status_counts": {
+          "EXCLUDED": 3302,
+          "POTENTIAL_OPPORTUNITY": 1596,
+          "INSUFFICIENT_DATA": 102
+        },
+        "propensity_histogram": [
+          4487,
+          436,
+          71,
+          6,
+          0
+        ],
+        "high_potential_customers": 195,
+        "calculable_impact_customers": 0,
+        "conditional_avoided_kgco2e": null,
+        "conditional_avoided_pages": null
+      },
+      {
+        "product_id": "GP04",
+        "product_name": "Paperless Banking",
+        "potential_customers": 2276,
+        "status_counts": {
+          "POTENTIAL_OPPORTUNITY": 2276,
+          "EXCLUDED": 2724
+        },
+        "propensity_histogram": [
+          2913,
+          909,
+          896,
+          281,
+          1
+        ],
+        "high_potential_customers": 1705,
+        "calculable_impact_customers": 2276,
+        "conditional_avoided_kgco2e": null,
+        "conditional_avoided_pages": 109248.0
+      }
+    ],
+    "data_timestamp": "2026-01-01",
+    "model_version": "greenlens-synthetic-v1",
+    "high_potential_threshold": 0.3,
+    "caveat": "Counts are use-case matches, not financial approvals. Product matches overlap. Impact totals assume every calculable match adopts its scenario, are not probability-weighted or forecasts, and must not be added across overlapping products."
+  }
+}

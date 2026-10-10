@@ -1,0 +1,89 @@
+{
+  "customers": {
+    "columns": {
+      "customer_id": "object",
+      "age_band": "object",
+      "region": "object",
+      "monthly_income_gbp": "float64",
+      "employment_status": "object",
+      "customer_since": "object"
+    },
+    "customer_key": "customer_id",
+    "primary_key": "customer_id",
+    "provenance": "synthetic_snapshot_or_estimate"
+  },
+  "customer_assets": {
+    "columns": {
+      "customer_id": "object",
+      "homeowner": "float64",
+      "property_type": "object",
+      "vehicle_ownership": "int64",
+      "vehicle_type": "object",
+      "owns_ev": "int64",
+      "annual_mileage_estimate": "float64",
+      "electricity_kwh_year": "int64",
+      "gas_kwh_year": "int64",
+      "heating_technology": "object",
+      "household_size": "int64",
+      "roof_suitable": "int64",
+      "replacement_intent": "int64"
+    },
+    "customer_key": "customer_id",
+    "primary_key": "customer_id",
+    "provenance": "synthetic_snapshot_or_estimate"
+  },
+  "customer_behaviour": {
+    "columns": {
+      "customer_id": "object",
+      "digital_logins_month": "int64",
+      "mobile_app_active": "int64",
+      "paper_statements_enabled": "int64",
+      "digital_transaction_ratio": "float64"
+    },
+    "customer_key": "customer_id",
+    "primary_key": "customer_id",
+    "provenance": "synthetic_snapshot_or_estimate"
+  },
+  "customer_products": {
+    "columns": {
+      "customer_id": "object",
+      "product_type": "object",
+      "product_status": "object",
+      "start_date": "object",
+      "end_date": "float64"
+    },
+    "customer_key": "customer_id",
+    "primary_key": [
+      "customer_id",
+      "product_type",
+      "start_date"
+    ],
+    "provenance": "synthetic_snapshot_or_estimate"
+  },
+  "transactions": {
+    "columns": {
+      "transaction_id": "object",
+      "customer_id": "object",
+      "transaction_date": "object",
+      "merchant_name": "object",
+      "merchant_description": "object",
+      "amount_gbp": "float64",
+      "sustainability_category": "object"
+    },
+    "customer_key": "customer_id",
+    "primary_key": "transaction_id",
+    "provenance": "synthetic_snapshot_or_estimate"
+  },
+  "product_takeup_labels": {
+    "columns": {
+      "customer_id": "object",
+      "ev_finance_takeup": "int64",
+      "green_home_takeup": "int64",
+      "solar_finance_takeup": "int64",
+      "paperless_takeup": "int64"
+    },
+    "customer_key": "customer_id",
+    "primary_key": "customer_id",
+    "provenance": "synthetic_simulated_outcome"
+  }
+}
