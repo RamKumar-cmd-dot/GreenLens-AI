@@ -1,5 +1,6 @@
 """Reproducible fictional UK banking cohort; outcomes follow the observation window."""
 import argparse
+import warnings
 import numpy as np
 import pandas as pd
 from ml.common import DATA, SEED, AS_OF, TARGETS, save_json
@@ -15,15 +16,29 @@ MERCHANTS = {
 'Utilities':[('Thames Water','water bill'),('BT','broadband account'),('EE','mobile plan'),('Octopus','dual energy account')],
 'Other':[('Tesco','weekly shop'),('Aldi','groceries'),('Amazon','marketplace order'),('Costa','card purchase')]}
 
-def generate(n=5000, seed=SEED, output=DATA/'synthetic', london_summary=None):
+def generate(n=5000, seed=SEED, output=DATA/'synthetic', london_summary=None, overwrite=False):
     if n < 100: raise ValueError('Use at least 100 customers; 5000 recommended for evaluation.')
+    if output.exists() and any(output.glob('*.csv')) and not overwrite:
+        raise FileExistsError(f'{output} already contains generated tables; pass overwrite=True only when replacement is intended')
     rng=np.random.default_rng(seed); output.mkdir(parents=True,exist_ok=True)
     profiles=None
+    london_profile_methodology=None
     if london_summary is not None:
         profile_frame=pd.read_csv(london_summary)
-        profiles=profile_frame.loc[profile_frame.complete_days>=7,'mean_complete_daily_kwh'].dropna().to_numpy()
+        if {'coverage_days_proxy','mean_annualized_daily_kwh'} <= set(profile_frame.columns):
+            coverage=profile_frame.coverage_days_proxy
+            profile_values=profile_frame.mean_annualized_daily_kwh
+            london_profile_methodology='Historical LCL meter averages; coverage_days_proxy is reading_count//48, not verified complete calendar days; profile values are annualized mean half-hour kWh converted to a daily average.'
+        elif {'complete_days','mean_complete_daily_kwh'} <= set(profile_frame.columns):
+            warnings.warn('Legacy London summary column complete_days is an observation-count proxy, not verified complete days.', RuntimeWarning)
+            coverage=profile_frame.complete_days
+            profile_values=profile_frame.mean_complete_daily_kwh
+            london_profile_methodology='Legacy historical LCL summary; complete_days is a reading-count proxy (not verified complete calendar days); profile values are annualized mean half-hour kWh converted to a daily average.'
+        else:
+            raise ValueError('London summary must have coverage_days_proxy/mean_annualized_daily_kwh columns or the documented legacy proxy columns')
+        profiles=profile_values.loc[coverage>=7].dropna().to_numpy()
         profiles=profiles[(profiles>0)&np.isfinite(profiles)]
-        if len(profiles)==0: raise ValueError('London summary needs meters with at least seven complete days')
+        if len(profiles)==0: raise ValueError('London summary needs meters with coverage_days_proxy >= 7 and a finite positive annualized daily mean')
     customers=[]; assets=[]; behaviours=[]; products=[]; transactions=[]; labels=[]
     for i in range(n):
         cid=f'C{i:06d}'; age=rng.choice(['18-29','30-44','45-59','60+'],p=[.22,.32,.28,.18])
@@ -70,7 +85,7 @@ def generate(n=5000, seed=SEED, output=DATA/'synthetic', london_summary=None):
         labels.append([cid]+[int(allowed[j] and rng.random()<sigmoid(z[j])) for j in range(4)])
     tables={'customers':(customers,['customer_id','age_band','region','monthly_income_gbp','employment_status','customer_since']), 'customer_assets':(assets,['customer_id','homeowner','property_type','vehicle_ownership','vehicle_type','owns_ev','annual_mileage_estimate','electricity_kwh_year','gas_kwh_year','heating_technology','household_size','roof_suitable','replacement_intent']), 'customer_behaviour':(behaviours,['customer_id','digital_logins_month','mobile_app_active','paper_statements_enabled','digital_transaction_ratio']), 'customer_products':(products,['customer_id','product_type','product_status','start_date','end_date']), 'transactions':(transactions,['transaction_id','customer_id','transaction_date','merchant_name','merchant_description','amount_gbp','sustainability_category']), 'product_takeup_labels':(labels,['customer_id']+list(TARGETS.values()))}
     for name,(rows,cols) in tables.items(): pd.DataFrame(rows,columns=cols).to_csv(output/f'{name}.csv',index=False)
-    save_json(output/'metadata.json',{'london_profile_source':str(london_summary) if london_summary else None,'seed':seed,'customers':n,'as_of':AS_OF,'observation_start':'2025-01-01','outcome_window':['2026-01-01','2026-06-30'],'source':'entirely synthetic; not real decisions','prevalence':pd.DataFrame(labels,columns=['customer_id']+list(TARGETS.values())).drop(columns='customer_id').mean().to_dict()})
+    save_json(output/'metadata.json',{'london_profile_source':str(london_summary) if london_summary else None,'london_profile_methodology':london_profile_methodology,'seed':seed,'customers':n,'as_of':AS_OF,'observation_start':'2025-01-01','outcome_window':['2026-01-01','2026-06-30'],'source':'entirely synthetic; not real decisions','prevalence':pd.DataFrame(labels,columns=['customer_id']+list(TARGETS.values())).drop(columns='customer_id').mean().to_dict()})
     print(f'Generated {n} customers, {len(transactions)} transactions in {output}')
 if __name__=='__main__':
-    p=argparse.ArgumentParser(); p.add_argument('--customers',type=int,default=5000); p.add_argument('--seed',type=int,default=SEED); p.add_argument('--london-summary',type=str); a=p.parse_args(); generate(a.customers,a.seed,london_summary=a.london_summary)
+    p=argparse.ArgumentParser(); p.add_argument('--customers',type=int,default=5000); p.add_argument('--seed',type=int,default=SEED); p.add_argument('--london-summary',type=str); p.add_argument('--overwrite',action='store_true',help='Replace existing synthetic CSVs'); a=p.parse_args(); generate(a.customers,a.seed,london_summary=a.london_summary,overwrite=a.overwrite)

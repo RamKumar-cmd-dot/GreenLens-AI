@@ -1,0 +1,11 @@
+{
+  "source_file": "data/processed/lcl_household_features.csv",
+  "output_file": "data/processed/london_summary_profile.csv",
+  "source_dataset": "Low Carbon London historical half-hour electricity readings",
+  "units": {
+    "mean_annualized_daily_kwh": "kWh/day"
+  },
+  "coverage_days_proxy": "floor(readings_count / 48); not a count of calendar days with 48 distinct valid readings",
+  "mean_annualized_daily_kwh": "electricity_kwh_year / 365; derived from mean observed half-hour reading annualized by process_lcl.py, not a verified daily profile",
+  "limitations": "Historical meter averages inform only variability in synthetic demand; no meter identity is linked to a synthetic banking customer. Missing intervals, duplicate timestamps, DST and complete-day coverage were not verified by the aggregate source file."
+}

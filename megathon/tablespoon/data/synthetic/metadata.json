@@ -1,5 +1,5 @@
 {
-  "london_profile_source": null,
+  "london_profile_source": "data/processed/london_summary_proxy.csv",
   "seed": 42,
   "customers": 5000,
   "as_of": "2026-01-01",
@@ -10,9 +10,9 @@
   ],
   "source": "entirely synthetic; not real decisions",
   "prevalence": {
-    "ev_finance_takeup": 0.1346,
-    "green_home_takeup": 0.1042,
-    "solar_finance_takeup": 0.0632,
-    "paperless_takeup": 0.1878
+    "ev_finance_takeup": 0.1388,
+    "green_home_takeup": 0.107,
+    "solar_finance_takeup": 0.0716,
+    "paperless_takeup": 0.182
   }
 }

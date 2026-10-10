@@ -1,60 +1,19 @@
-# Created file inventory
-Existing README.md is preserved. All paths below are relative to the repository root. Runtime .venv and cache files are excluded.
+# GreenLens project map
 
-| File | Purpose |
-|---|---|
-| `.gitignore` | Exclude runtime environment, caches and raw files |
-| `requirements-ml.txt` | Direct dependency ranges |
-| `requirements-ml.lock.txt` | Exact executed dependency versions |
-| `data/__init__.py` | Python package marker |
-| `data/generate_synthetic.py` | Seeded relational data and probabilistic outcome generation; optional demand-profile variation |
-| `data/process_london_energy.py` | Inspect-first bounded CSV/ZIP electricity preprocessing |
-| `data/processed/customer_360.csv` | Unified customer features |
-| `data/processed/splits.json` | Explicit train/validation/test customer IDs |
-| `data/schemas/feature_schema.json` | Ordered numeric/categorical model contract |
-| `data/schemas/product_catalogue.json` | Mandatory product purposes |
-| `data/schemas/relational_schema.json` | CSV column schemas and keys |
-| `data/synthetic/customer_assets.csv` | Generated fictional relational table; fields documented in data_dictionary.md |
-| `data/synthetic/customer_behaviour.csv` | Generated fictional relational table; fields documented in data_dictionary.md |
-| `data/synthetic/customer_products.csv` | Generated fictional relational table; fields documented in data_dictionary.md |
-| `data/synthetic/customers.csv` | Generated fictional relational table; fields documented in data_dictionary.md |
-| `data/synthetic/metadata.json` | Generation provenance/prevalence |
-| `data/synthetic/product_takeup_labels.csv` | Generated fictional relational table; fields documented in data_dictionary.md |
-| `data/synthetic/transactions.csv` | Generated fictional relational table; fields documented in data_dictionary.md |
-| `docs/backend_example.py` | Backend adapter/import guidance |
-| `docs/data_dictionary.md` | Table and feature definitions |
-| `docs/ml_methodology.md` | Model, reliability, taxonomy and integration contracts |
-| `docs/reproduction.md` | Commands and optional historical processing |
-| `docs/synthetic_methodology.md` | Generation equations, assumptions and limitations |
-| `ml/__init__.py` | Python package marker |
-| `ml/common.py` | Paths, seed, categories, feature and target contracts |
-| `ml/eligibility.py` | Product purposes and explicit use-case exclusions |
-| `ml/evaluate.py` | Binary metrics and readable comparison report |
-| `ml/feature_engineering.py` | Pre-cutoff Customer 360 aggregation |
-| `ml/inference.py` | JSON-safe cached model loading, customer/product/transaction inference |
-| `ml/models/GP01.joblib` | Saved fitted preprocessing/classifier pipeline |
-| `ml/models/GP02.joblib` | Saved fitted preprocessing/classifier pipeline |
-| `ml/models/GP03.joblib` | Saved fitted preprocessing/classifier pipeline |
-| `ml/models/GP04.joblib` | Saved fitted preprocessing/classifier pipeline |
-| `ml/models/metadata.json` | Model version, runtime versions, feature schema and reliability metadata |
-| `ml/models/transaction_classifier.joblib` | Saved fitted preprocessing/classifier pipeline |
-| `ml/propensity_models.py` | Customer splits, train-only preprocessing, baseline/candidate selection and artifacts |
-| `ml/reports/GP01.json` | Train distribution, validation/test candidate and baseline metrics, selection rationale |
-| `ml/reports/GP01_test_predictions.csv` | Held-out predictions with true labels and customer identifiers |
-| `ml/reports/GP02.json` | Train distribution, validation/test candidate and baseline metrics, selection rationale |
-| `ml/reports/GP02_test_predictions.csv` | Held-out predictions with true labels and customer identifiers |
-| `ml/reports/GP03.json` | Train distribution, validation/test candidate and baseline metrics, selection rationale |
-| `ml/reports/GP03_test_predictions.csv` | Held-out predictions with true labels and customer identifiers |
-| `ml/reports/GP04.json` | Train distribution, validation/test candidate and baseline metrics, selection rationale |
-| `ml/reports/GP04_test_predictions.csv` | Held-out predictions with true labels and customer identifiers |
-| `ml/reports/evaluation.md` | Readable validation/test comparisons |
-| `ml/reports/sample_response.json` | Complete four-product example for C000025 |
-| `ml/reports/test_results.txt` | Actual pytest execution results |
-| `ml/reports/transaction_evaluation.md` | Readable transaction classifier/baseline results |
-| `ml/reports/transaction_metrics.json` | Per-category reports and confusion matrices |
-| `ml/reports/transaction_test_predictions.csv` | Held-out predictions with true labels and customer identifiers |
-| `ml/run_pipeline.py` | One-command artifact regeneration |
-| `ml/transaction_classifier.py` | Rule baseline and TF-IDF logistic classifier |
-| `tests/test_data.py` | Relational integrity, splits, leakage and generator reproducibility tests |
-| `tests/test_ml.py` | Inference, exclusion, reload, training reproducibility and interval-summary tests |
-| `docs/file_inventory.md` | This complete deliverable inventory |
+This is a project map rather than a generated exhaustive listing. Raw external inputs, model backups and generated backups are preserved locally and excluded by `.gitignore`.
+
+| Area | Key files | Purpose |
+|---|---|---|
+| Source brief | `deliverables/M1.pdf` | Supplied two-page PS1 brief |
+| Synthetic data | `data/generate_synthetic.py`; `data/synthetic/*.csv`; `data/synthetic/metadata.json` | Seeded relational cohort and simulated adoption targets |
+| Historical electricity | `data/process_lcl.py`; `data/process_london_energy.py`; `data/prepare_london_summary.py`; `data/processed/lcl_household_features.csv`; `data/processed/london_summary_profile.csv` | Optional chunked source summarization, inspect-first processing and explicitly labelled annualized/coverage proxy |
+| Customer 360 | `ml/feature_engineering.py`; `data/processed/customer_360.csv`; `data/processed/splits.json`; `data/schemas/` | Pre-cutoff customer features, split IDs and versioned schemas/catalogue |
+| ML models | `ml/transaction_classifier.py`; `ml/propensity_models.py`; `ml/inference.py`; `ml/eligibility.py`; `ml/models/*.joblib`; `ml/models/metadata.json` | Reusable classifier, four propensity pipelines, screening and serialized artifacts |
+| Evaluation | `ml/evaluate.py`; `ml/verify_artifacts.py`; `ml/reports/*.json`; `ml/reports/*predictions.csv`; `ml/reports/selected_thresholds.json`; `ml/reports/threshold_test_metrics.json` | Model validation, held-out metrics/predictions, reload audit and final threshold report |
+| Backend | `backend/app.py`; `backend/store.py`; `backend/recommendations.py`; `backend/eligibility.py`; `backend/impact.py`; `backend/explanations.py`; `backend/business.py`; `backend/schemas.py` | FastAPI endpoints, SQLite snapshot, product screens, deterministic impact, structured explanations and summaries |
+| Frontend | `frontend/src/`; `frontend/tests/App.test.jsx`; `frontend/vite.config.js`; `frontend/package-lock.json` | React/Vite customer and business views, live API integration, tests/build |
+| Tests | `tests/test_data.py`; `tests/test_ml.py`; `tests/integration/*` | Data, model, API, eligibility, carbon and explanation checks |
+| Documentation | `README.md`; `docs/architecture.md`; `docs/model_evaluation.md`; `docs/sustainability_methodology.md`; `docs/responsible_ai.md`; `docs/demo_script.md`; `docs/submission_checklist.md`; `docs/reproduction.md` | Runtime, architecture, methods, responsible AI, demo and submission status |
+| Visual QA | `docs/screenshots/customer-dashboard.png`; `docs/screenshots/ev-exclusion.png`; `docs/screenshots/business-dashboard.png` | Browser captures from the local synthetic prototype |
+
+The root `requirements-api.txt` includes the pinned model-compatible requirements in `requirements-ml.txt`; matching resolved versions are recorded in `requirements-api.lock.txt` and `requirements-ml.lock.txt`. `.env.example` holds names and local defaults only.

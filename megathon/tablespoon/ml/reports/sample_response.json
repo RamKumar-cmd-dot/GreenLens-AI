@@ -4,22 +4,26 @@
     {
       "customer_id": "C000025",
       "product_id": "GP01",
-      "propensity": 0.2003173705837605,
+      "propensity": 0.14661855778148267,
+      "threshold_screen": {
+        "threshold": 0.24,
+        "above_threshold": false,
+        "status": "BELOW_VALIDATION_SELECTED_THRESHOLD",
+        "selection_basis": "validation-set F1; statistical prioritization only"
+      },
       "confidence": null,
       "reliability": {
         "status": "synthetic_only_unvalidated_for_real_customers",
         "per_customer_confidence": "unavailable",
         "probability_status": "uncalibrated model estimate of simulated take-up",
-        "validation_brier": 0.11005412850849636,
-        "validation_ece": 0.01808897910071161,
-        "missing_feature_count": 1
+        "validation_brier": 0.09363424018927852,
+        "validation_ece": 0.021001132544154377,
+        "missing_feature_count": 0
       },
       "reason_codes": [
-        "HIGH_FUEL_SPEND",
         "EXISTING_PETROL_VEHICLE"
       ],
       "evidence": {
-        "mean_monthly_fuel": 129.04999999999998,
         "vehicle_type": "petrol"
       },
       "data_timestamp": "2026-01-01",
@@ -37,15 +41,21 @@
     {
       "customer_id": "C000025",
       "product_id": "GP02",
-      "propensity": 0.1435142084639635,
+      "propensity": 0.16781516124015858,
+      "threshold_screen": {
+        "threshold": 0.1,
+        "above_threshold": true,
+        "status": "ABOVE_VALIDATION_SELECTED_THRESHOLD",
+        "selection_basis": "validation-set F1; statistical prioritization only"
+      },
       "confidence": null,
       "reliability": {
         "status": "synthetic_only_unvalidated_for_real_customers",
         "per_customer_confidence": "unavailable",
         "probability_status": "uncalibrated model estimate of simulated take-up",
-        "validation_brier": 0.07889774684633966,
-        "validation_ece": 0.01064698349050836,
-        "missing_feature_count": 1
+        "validation_brier": 0.09387468155226543,
+        "validation_ece": 0.018903625605954474,
+        "missing_feature_count": 0
       },
       "reason_codes": [
         "HOME_OWNER"
@@ -68,15 +78,21 @@
     {
       "customer_id": "C000025",
       "product_id": "GP03",
-      "propensity": 0.3368266519745018,
+      "propensity": 0.1541695244655784,
+      "threshold_screen": {
+        "threshold": 0.23,
+        "above_threshold": false,
+        "status": "BELOW_VALIDATION_SELECTED_THRESHOLD",
+        "selection_basis": "validation-set F1; statistical prioritization only"
+      },
       "confidence": null,
       "reliability": {
         "status": "synthetic_only_unvalidated_for_real_customers",
         "per_customer_confidence": "unavailable",
         "probability_status": "uncalibrated model estimate of simulated take-up",
-        "validation_brier": 0.0515988238571295,
-        "validation_ece": 0.010087269114633923,
-        "missing_feature_count": 1
+        "validation_brier": 0.05149570941224096,
+        "validation_ece": 0.010606848734985356,
+        "missing_feature_count": 0
       },
       "reason_codes": [
         "HOME_OWNER",
@@ -84,7 +100,7 @@
       ],
       "evidence": {
         "homeowner": 1.0,
-        "electricity_kwh_year": 7177.0
+        "electricity_kwh_year": 4475.0
       },
       "data_timestamp": "2026-01-01",
       "model_version": "greenlens-synthetic-v1",
@@ -101,23 +117,27 @@
     {
       "customer_id": "C000025",
       "product_id": "GP04",
-      "propensity": 0.5044105984617273,
+      "propensity": 0.3201464917751744,
+      "threshold_screen": {
+        "threshold": 0.28,
+        "above_threshold": true,
+        "status": "ABOVE_VALIDATION_SELECTED_THRESHOLD",
+        "selection_basis": "validation-set F1; statistical prioritization only"
+      },
       "confidence": null,
       "reliability": {
         "status": "synthetic_only_unvalidated_for_real_customers",
         "per_customer_confidence": "unavailable",
         "probability_status": "uncalibrated model estimate of simulated take-up",
-        "validation_brier": 0.11543429003397723,
-        "validation_ece": 0.03590049559114838,
-        "missing_feature_count": 1
+        "validation_brier": 0.09998906819576502,
+        "validation_ece": 0.05726646866303266,
+        "missing_feature_count": 0
       },
       "reason_codes": [
-        "PAPER_STATEMENTS_ENABLED",
-        "HIGH_DIGITAL_ENGAGEMENT"
+        "PAPER_STATEMENTS_ENABLED"
       ],
       "evidence": {
-        "paper_statements_enabled": 1.0,
-        "digital_logins_month": 24.0
+        "paper_statements_enabled": 1.0
       },
       "data_timestamp": "2026-01-01",
       "model_version": "greenlens-synthetic-v1",
@@ -133,9 +153,9 @@
     }
   ],
   "carbon_inputs": {
-    "annual_mileage_estimate": null,
-    "electricity_kwh_year": 7177.0,
-    "gas_kwh_year": 0.0,
+    "annual_mileage_estimate": 6820.0,
+    "electricity_kwh_year": 4475.0,
+    "gas_kwh_year": 8961.0,
     "vehicle_type": "petrol",
     "source": "synthetic estimates",
     "period": "annual",

@@ -2,6 +2,10 @@
 __pycache__/
 .pytest_cache/
 data/raw/*
+data/external/*
+data/synthetic_backup/
+ml/models_backup/
+ml/reports_backup/
 node_modules/
 frontend/dist/
 .env

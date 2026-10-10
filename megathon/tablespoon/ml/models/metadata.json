@@ -2,8 +2,8 @@
   "version": "greenlens-synthetic-v1",
   "seed": 42,
   "as_of": "2026-01-01",
-  "python": "3.13.13",
-  "sklearn": "1.7.2",
+  "python": "3.12.12",
+  "sklearn": "1.9.1",
   "features": [
     "monthly_income_gbp",
     "mean_monthly_fuel",
@@ -39,33 +39,33 @@
       "target": "ev_finance_takeup",
       "selected": "logistic",
       "probability_status": "uncalibrated model estimate of simulated take-up",
-      "validation_brier": 0.11005412850849636,
-      "validation_ece": 0.01808897910071161,
-      "training_prevalence": 0.13485714285714287
+      "validation_brier": 0.09363424018927852,
+      "validation_ece": 0.021001132544154377,
+      "training_prevalence": 0.14
     },
     "GP02": {
       "target": "green_home_takeup",
       "selected": "logistic",
       "probability_status": "uncalibrated model estimate of simulated take-up",
-      "validation_brier": 0.07889774684633966,
-      "validation_ece": 0.01064698349050836,
+      "validation_brier": 0.09387468155226543,
+      "validation_ece": 0.018903625605954474,
       "training_prevalence": 0.10628571428571429
     },
     "GP03": {
       "target": "solar_finance_takeup",
       "selected": "logistic",
       "probability_status": "uncalibrated model estimate of simulated take-up",
-      "validation_brier": 0.0515988238571295,
-      "validation_ece": 0.010087269114633923,
-      "training_prevalence": 0.06085714285714286
+      "validation_brier": 0.05149570941224096,
+      "validation_ece": 0.010606848734985356,
+      "training_prevalence": 0.07314285714285715
     },
     "GP04": {
       "target": "paperless_takeup",
-      "selected": "logistic",
+      "selected": "random_forest",
       "probability_status": "uncalibrated model estimate of simulated take-up",
-      "validation_brier": 0.11543429003397723,
-      "validation_ece": 0.03590049559114838,
-      "training_prevalence": 0.18371428571428572
+      "validation_brier": 0.09998906819576502,
+      "validation_ece": 0.05726646866303266,
+      "training_prevalence": 0.18828571428571428
     }
   }
 }

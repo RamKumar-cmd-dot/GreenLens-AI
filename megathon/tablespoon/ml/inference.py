@@ -1,5 +1,6 @@
 """Backend entrypoints. Never use model scores as eligibility or credit approval."""
 import json
+import math
 from functools import lru_cache
 import joblib
 import numpy as np
@@ -11,7 +12,14 @@ from ml.eligibility import screen, missing
 def load_models():
     meta=json.loads((MODELS/'metadata.json').read_text())
     if meta['features']!=FEATURES: raise ValueError('Model feature schema mismatch')
-    return {'metadata':meta,**{pid:joblib.load(MODELS/f'{pid}.joblib') for pid in TARGETS},'transaction':joblib.load(MODELS/'transaction_classifier.joblib')}
+    threshold_path=REPORTS/'selected_thresholds.json'
+    thresholds=json.loads(threshold_path.read_text())
+    if set(thresholds)!=set(TARGETS): raise ValueError('Selected threshold product schema mismatch')
+    for pid, entry in thresholds.items():
+        value=entry.get('threshold') if isinstance(entry,dict) else None
+        if isinstance(value,bool) or not isinstance(value,(int,float)) or not math.isfinite(value) or not 0<=value<=1:
+            raise ValueError(f'Invalid selected threshold for {pid}')
+    return {'metadata':meta,'thresholds':{pid:float(v['threshold']) for pid,v in thresholds.items()},**{pid:joblib.load(MODELS/f'{pid}.joblib') for pid in TARGETS},'transaction':joblib.load(MODELS/'transaction_classifier.joblib')}
 
 def normalize(raw):
     f={k:raw.get(k) for k in FEATURES}
@@ -37,7 +45,8 @@ def predict_opportunities(customer_features):
     f=normalize(customer_features); models=load_models(); frame=pd.DataFrame([f],columns=FEATURES); outputs=[]
     for pid in TARGETS:
         eligibility=screen(pid,f); codes,evidence=reasons(pid,f); meta=models['metadata']['products'][pid]
-        outputs.append({'customer_id':customer_features.get('customer_id'),'product_id':pid,'propensity':float(models[pid].predict_proba(frame)[0,1]),'confidence':None,'reliability':{'status':'synthetic_only_unvalidated_for_real_customers','per_customer_confidence':'unavailable','probability_status':meta['probability_status'],'validation_brier':meta['validation_brier'],'validation_ece':meta['validation_ece'],'missing_feature_count':sum(missing(v) for v in f.values())},'reason_codes':codes,'evidence':evidence,'data_timestamp':customer_features.get('data_timestamp'),'model_version':VERSION,'applicable_exclusions':eligibility['applicable_exclusions'],'eligibility':eligibility,'recommendation_status':'excluded' if eligibility['status']=='excluded' else 'needs_review' if eligibility['status']=='needs_review' else 'opportunity_pending_institutional_checks'})
+        propensity=float(models[pid].predict_proba(frame)[0,1]); threshold=models['thresholds'][pid]
+        outputs.append({'customer_id':customer_features.get('customer_id'),'product_id':pid,'propensity':propensity,'threshold_screen':{'threshold':threshold,'above_threshold':propensity>=threshold,'status':'ABOVE_VALIDATION_SELECTED_THRESHOLD' if propensity>=threshold else 'BELOW_VALIDATION_SELECTED_THRESHOLD','selection_basis':'validation-set F1; statistical prioritization only'},'confidence':None,'reliability':{'status':'synthetic_only_unvalidated_for_real_customers','per_customer_confidence':'unavailable','probability_status':meta['probability_status'],'validation_brier':meta['validation_brier'],'validation_ece':meta['validation_ece'],'missing_feature_count':sum(missing(v) for v in f.values())},'reason_codes':codes,'evidence':evidence,'data_timestamp':customer_features.get('data_timestamp'),'model_version':VERSION,'applicable_exclusions':eligibility['applicable_exclusions'],'eligibility':eligibility,'recommendation_status':'excluded' if eligibility['status']=='excluded' else 'needs_review' if eligibility['status']=='needs_review' else 'opportunity_pending_institutional_checks'})
     return {'customer_id':customer_features.get('customer_id'),'opportunities':outputs,'carbon_inputs':{'annual_mileage_estimate':None if missing(f['annual_mileage_estimate']) else f['annual_mileage_estimate'],'electricity_kwh_year':None if missing(f['electricity_kwh_year']) else f['electricity_kwh_year'],'gas_kwh_year':None if missing(f['gas_kwh_year']) else f['gas_kwh_year'],'vehicle_type':None if missing(f['vehicle_type']) else f['vehicle_type'],'source':'synthetic estimates','period':'annual','emissions_calculated':False}}
 
 def predict_customer(customer_id):

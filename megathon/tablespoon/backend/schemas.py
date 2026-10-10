@@ -59,6 +59,7 @@ class Recommendation(BaseModel):
     product_id: str
     product_name: str
     propensity: float = Field(ge=0, le=1)
+    threshold_screen: dict[str, Scalar]
     confidence: float | None = None
     reliability: dict[str, Scalar]
     status: Status
@@ -102,7 +103,8 @@ class ProductSummary(BaseModel):
     potential_customers: int
     status_counts: dict[str, int]
     propensity_histogram: list[int]
-    high_potential_customers: int
+    priority_threshold: float
+    priority_threshold_matches: int
     calculable_impact_customers: int
     conditional_avoided_kgco2e: float | None
     conditional_avoided_pages: float | None
@@ -113,7 +115,6 @@ class BusinessSummary(BaseModel):
     products: list[ProductSummary]
     data_timestamp: str
     model_version: str
-    high_potential_threshold: float
     caveat: str
 
 class Segment(BaseModel):

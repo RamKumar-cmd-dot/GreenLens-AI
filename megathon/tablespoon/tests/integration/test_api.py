@@ -20,6 +20,8 @@ def test_milestone_a(client):
     result=client.get('/customers/C000025/opportunities').json()['opportunities']
     assert {r['product_id'] for r in result}=={'GP01','GP02','GP03','GP04'}
     assert all(0<=r['propensity']<=1 for r in result)
+    assert all(0<=r['threshold_screen']['threshold']<=1 for r in result)
+    assert all(r['threshold_screen']['above_threshold']==(r['propensity']>=r['threshold_screen']['threshold']) for r in result)
 
 def test_business_and_insights(client,monkeypatch):
     monkeypatch.delenv('OPENAI_API_KEY',raising=False)
@@ -32,6 +34,9 @@ def test_business_and_insights(client,monkeypatch):
         page=client.get('/business/opportunities',params={'product_id':p['product_id']}).json()
         assert page['total']==p['potential_customers']
         assert all(r['status']=='POTENTIAL_OPPORTUNITY' for r in page['items'])
+        screened=client.get('/business/opportunities',params={'product_id':p['product_id'],'above_threshold':'true'}).json()
+        assert screened['total']==p['priority_threshold_matches']
+        assert all(r['threshold_screen']['above_threshold'] for r in screened['items'])
     segments=client.get('/business/segments').json()['items']
     assert sum(x['customers'] for x in segments)==5000
     assert sum(x['potential_customers'] for x in segments)==s['unique_customers_with_opportunities']

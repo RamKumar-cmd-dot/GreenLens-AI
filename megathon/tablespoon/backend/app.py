@@ -70,9 +70,9 @@ def create_app(db_path=None):
     @app.get('/business/segments',response_model=Segments)
     def business_segments(): return business.segments(service())
     @app.get('/business/opportunities',response_model=BusinessOpportunities)
-    def business_opportunities(product_id:str|None=None,status:Status='POTENTIAL_OPPORTUNITY',offset:int=Query(0,ge=0),limit:int=Query(25,ge=1,le=100),region:str|None=None):
+    def business_opportunities(product_id:str|None=None,status:Status='POTENTIAL_OPPORTUNITY',offset:int=Query(0,ge=0),limit:int=Query(25,ge=1,le=100),region:str|None=None,above_threshold:bool|None=None):
         if product_id and product_id not in ['GP01','GP02','GP03','GP04']: raise HTTPException(422,'Unknown product')
-        return business.opportunities(service(),product_id,status,offset,limit,region)
+        return business.opportunities(service(),product_id,status,offset,limit,region,above_threshold)
     @app.post('/transactions/classify',response_model=ClassifyResponse)
     def classify(body:ClassifyRequest):
         service()

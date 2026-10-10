@@ -1,0 +1,62 @@
+{
+  "GP01": {
+    "threshold": 0.24,
+    "original": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "flagged": 2
+    },
+    "tuned": {
+      "precision": 0.35507246376811596,
+      "recall": 0.4298245614035088,
+      "f1": 0.3888888888888889,
+      "flagged": 138
+    }
+  },
+  "GP02": {
+    "threshold": 0.1,
+    "original": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "flagged": 0
+    },
+    "tuned": {
+      "precision": 0.19830028328611898,
+      "recall": 0.9333333333333333,
+      "f1": 0.32710280373831774,
+      "flagged": 353
+    }
+  },
+  "GP03": {
+    "threshold": 0.23,
+    "original": {
+      "precision": 0.6,
+      "recall": 0.13636363636363635,
+      "f1": 0.2222222222222222,
+      "flagged": 10
+    },
+    "tuned": {
+      "precision": 0.28,
+      "recall": 0.4772727272727273,
+      "f1": 0.35294117647058826,
+      "flagged": 75
+    }
+  },
+  "GP04": {
+    "threshold": 0.28,
+    "original": {
+      "precision": 0.3333333333333333,
+      "recall": 0.007633587786259542,
+      "f1": 0.014925373134328358,
+      "flagged": 3
+    },
+    "tuned": {
+      "precision": 0.4318181818181818,
+      "recall": 0.8702290076335878,
+      "f1": 0.5772151898734177,
+      "flagged": 264
+    }
+  }
+}

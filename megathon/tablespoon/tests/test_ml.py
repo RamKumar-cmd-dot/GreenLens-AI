@@ -11,8 +11,22 @@ from ml.propensity_models import pipeline
 def test_inference_and_reload():
     result=predict_customer('C000000'); assert {p['product_id'] for p in result['opportunities']}==set(TARGETS)
     assert all(0<=p['propensity']<=1 and p['confidence'] is None for p in result['opportunities'])
+    assert all(0<=p['threshold_screen']['threshold']<=1 for p in result['opportunities'])
+    assert all(p['threshold_screen']['above_threshold']==(p['propensity']>=p['threshold_screen']['threshold']) for p in result['opportunities'])
     json.dumps(result,allow_nan=False)
-    load_models.cache_clear(); assert result==predict_customer('C000000')
+    load_models.cache_clear(); reloaded=predict_customer('C000000')
+    assert {k:v for k,v in result.items() if k!='opportunities'}=={k:v for k,v in reloaded.items() if k!='opportunities'}
+    for first,second in zip(result['opportunities'],reloaded['opportunities']):
+        assert {k:v for k,v in first.items() if k!='propensity'}=={k:v for k,v in second.items() if k!='propensity'}
+        assert first['propensity']==pytest.approx(second['propensity'],rel=1e-10,abs=1e-12)
+
+def test_threshold_screen_is_separate_from_use_case_screen():
+    result=predict_opportunities({'customer_id':'synthetic-test','paper_statements_enabled':0})
+    gp04=next(p for p in result['opportunities'] if p['product_id']=='GP04')
+    assert gp04['eligibility']['status']=='excluded'
+    assert gp04['recommendation_status']=='excluded'
+    assert gp04['threshold_screen']['status'] in {'ABOVE_VALIDATION_SELECTED_THRESHOLD','BELOW_VALIDATION_SELECTED_THRESHOLD'}
+    assert gp04['propensity']>=0 and gp04['propensity']<=1
 
 def test_missing_unknown():
     result=predict_opportunities({'region':'unseen_region'}); json.dumps(result,allow_nan=False)

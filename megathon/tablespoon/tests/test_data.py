@@ -1,5 +1,6 @@
 import json
 import pandas as pd
+import pytest
 from ml.common import DATA,CATEGORIES,FEATURES,TARGETS
 from ml.propensity_models import split_customers
 
@@ -25,6 +26,10 @@ def test_generation_reproducible(tmp_path):
     from data.generate_synthetic import generate
     generate(100,output=tmp_path/'a'); generate(100,output=tmp_path/'b')
     for f in (tmp_path/'a').glob('*.csv'): assert f.read_bytes()==(tmp_path/'b'/f.name).read_bytes()
+
+def test_generator_refuses_to_replace_existing_cohort():
+    from data.generate_synthetic import generate
+    with pytest.raises(FileExistsError): generate(100,output=DATA/'synthetic')
 
 def test_future_transactions_excluded(tmp_path):
     import shutil
