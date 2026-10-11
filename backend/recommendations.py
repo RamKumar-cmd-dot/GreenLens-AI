@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from ml.common import FEATURES, TARGETS, VERSION
 from ml.eligibility import CATALOGUE, screen, missing
 from ml.inference import load_models, reasons, normalize, validation_score_band
@@ -37,7 +38,44 @@ class Recommendations:
     def customer(self, cid):
         if cid not in self.by_customer:
             raise KeyError(cid)
-        return {'customer_id':cid,'opportunities':self.by_customer[cid]}
+        return {'customer_id':cid,'opportunities':[self._with_memory(cid, row) for row in self.by_customer[cid]]}
+
+    def _with_memory(self, cid, recommendation):
+        interaction = self.store.latest_interaction(cid, recommendation.product_id)
+        update = {
+            'presentation_status': 'STANDARD',
+            'presentation_priority': 100,
+            'presentation_note': None,
+            'customer_memory': {},
+        }
+        if interaction is None:
+            return recommendation.model_copy(update=update)
+
+        action = interaction['action']
+        memory = {key: interaction[key] for key in ('action', 'reason', 'created_at', 'snooze_until')}
+        update['customer_memory'] = memory
+        if action == 'clear':
+            update['presentation_note'] = 'Your previous preference was cleared; the standard recommendation is shown.'
+        elif action == 'explore':
+            update.update(presentation_status='EXPLORED', presentation_priority=105,
+                          presentation_note='You explored this opportunity previously.')
+        elif action == 'interested':
+            update.update(presentation_status='INTERESTED', presentation_priority=120,
+                          presentation_note='You marked this opportunity as interesting. Product checks still apply.')
+        elif action == 'dismiss':
+            update.update(presentation_status='DEPRIORITIZED', presentation_priority=40,
+                          presentation_note='You dismissed this opportunity; it is shown lower in the list. Update or clear your preference any time.')
+        elif action == 'not_interested':
+            update.update(presentation_status='SUPPRESSED', presentation_priority=0,
+                          presentation_note='You asked not to see proactive reminders for this product. The underlying screening result is unchanged.')
+        elif action == 'remind_later':
+            snooze_until = datetime.fromisoformat(interaction['snooze_until'].replace('Z', '+00:00'))
+            if snooze_until > datetime.now(timezone.utc):
+                update.update(presentation_status='SNOOZED', presentation_priority=10,
+                              presentation_note=f'Reminder requested for {interaction["snooze_until"]}; this item is shown lower until then.')
+            else:
+                update['presentation_note'] = 'Your reminder date passed; this opportunity is visible at its standard priority again.'
+        return recommendation.model_copy(update=update)
 
     def scenario(self, cid, changes):
         allowed={'vehicle_ownership','vehicle_type','owns_ev','replacement_intent','homeowner','roof_suitable','paper_statements_enabled','electricity_kwh_year','gas_kwh_year','annual_mileage_estimate','digital_logins_month','digital_transaction_ratio'}
@@ -52,5 +90,5 @@ class Recommendations:
         predictions=[]
         for pid in TARGETS:
             score=float(self.models[pid].predict_proba(row)[0,1])
-            predictions.append(assemble(f,pid,score,self.models['metadata'],self.models['thresholds'][pid]))
+            predictions.append(self._with_memory(cid, assemble(f,pid,score,self.models['metadata'],self.models['thresholds'][pid])))
         return {'customer_id':cid,'opportunities':predictions,'scenario_changes':changes,'synthetic':True}

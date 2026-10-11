@@ -1,5 +1,6 @@
 from typing import Any, Literal
-from pydantic import BaseModel, Field
+from datetime import datetime, timezone
+from pydantic import BaseModel, Field, model_validator
 
 Scalar = str | float | int | bool | None
 Status = Literal['POTENTIAL_OPPORTUNITY', 'EXCLUDED', 'INSUFFICIENT_DATA', 'NEEDS_REVIEW']
@@ -75,10 +76,57 @@ class Recommendation(BaseModel):
     model_version: str
     impact: Impact
     recommended_action: str
+    presentation_status: Literal['STANDARD', 'EXPLORED', 'DEPRIORITIZED', 'SNOOZED', 'SUPPRESSED', 'INTERESTED'] = 'STANDARD'
+    presentation_priority: int = 100
+    presentation_note: str | None = None
+    customer_memory: dict[str, Any] = Field(default_factory=dict)
 
 class OpportunityResponse(BaseModel):
     customer_id: str
     opportunities: list[Recommendation]
+
+InteractionAction = Literal['explore', 'dismiss', 'remind_later', 'not_interested', 'interested', 'clear']
+
+class FeedbackRequest(BaseModel):
+    product_id: Literal['GP01', 'GP02', 'GP03', 'GP04']
+    action: InteractionAction
+    reason: str | None = Field(default=None, max_length=500)
+    snooze_until: datetime | None = None
+
+    @model_validator(mode='after')
+    def validate_reminder(self):
+        if self.action == 'remind_later':
+            if self.snooze_until is None:
+                raise ValueError('snooze_until is required for remind_later')
+            if self.snooze_until.tzinfo is None or self.snooze_until.utcoffset() is None:
+                raise ValueError('snooze_until must include a timezone')
+            if self.snooze_until <= datetime.now(timezone.utc):
+                raise ValueError('snooze_until must be in the future')
+        elif self.snooze_until is not None:
+            raise ValueError('snooze_until is only valid for remind_later')
+        return self
+
+class CustomerInteraction(BaseModel):
+    id: int
+    customer_id: str
+    product_id: Literal['GP01', 'GP02', 'GP03', 'GP04']
+    action: InteractionAction
+    reason: str | None = None
+    created_at: str
+    snooze_until: str | None = None
+
+class CustomerInteractionPage(BaseModel):
+    customer_id: str
+    total: int
+    offset: int
+    limit: int
+    items: list[CustomerInteraction]
+
+class FeedbackResponse(BaseModel):
+    customer_id: str
+    interaction: CustomerInteraction
+    recommendation: Recommendation
+    message: str
 
 class ScenarioRequest(BaseModel):
     changes: dict[str, Scalar]

@@ -13,3 +13,8 @@ export async function runScenario(customerId,changes){
  if(!response.ok)throw new Error(response.status===422?'Scenario inputs are invalid.':`Scenario unavailable (${response.status}).`);
  return response.json();
 }
+export async function saveFeedback(customerId,feedback){
+ const response=await fetch(`${import.meta.env.VITE_API_BASE || '/api'}/customers/${encodeURIComponent(customerId)}/feedback`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(feedback)});
+ if(!response.ok){let detail='Feedback could not be saved.';try{const body=await response.json();detail=body.detail||detail;}catch{}throw new Error(typeof detail==='string'?detail:`Feedback request failed (${response.status}).`);}
+ return response.json();
+}

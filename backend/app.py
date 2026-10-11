@@ -3,7 +3,7 @@ import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from backend.schemas import Health, Customer, CustomerPage, TransactionPage, OpportunityResponse, ScenarioRequest, ScenarioResponse, Insights, BusinessSummary, Segments, BusinessOpportunities, BusinessTrends, Status
+from backend.schemas import Health, Customer, CustomerPage, TransactionPage, OpportunityResponse, ScenarioRequest, ScenarioResponse, Insights, BusinessSummary, Segments, BusinessOpportunities, BusinessTrends, Status, FeedbackRequest, FeedbackResponse, CustomerInteractionPage
 from backend import business
 from backend.explanations import explain
 from functools import lru_cache
@@ -57,6 +57,19 @@ def create_app(db_path=None):
         return lookup(store().transactions,customer_id,offset,limit,category)
     @app.get('/customers/{customer_id}/opportunities', response_model=OpportunityResponse)
     def opportunities(customer_id:str): return lookup(service().customer,customer_id)
+    @app.get('/customers/{customer_id}/feedback', response_model=CustomerInteractionPage)
+    def feedback_history(customer_id:str,offset:int=Query(0,ge=0),limit:int=Query(50,ge=1,le=100)):
+        result=lookup(store().interaction_history,customer_id,offset,limit)
+        return {'customer_id':customer_id,**result}
+    @app.post('/customers/{customer_id}/feedback', response_model=FeedbackResponse)
+    def feedback(customer_id:str,body:FeedbackRequest):
+        recommendation_service=service()
+        interaction=lookup(store().record_interaction,customer_id,body.product_id,body.action,body.reason,
+                           body.snooze_until.isoformat() if body.snooze_until else None)
+        current=recommendation_service.customer(customer_id)
+        recommendation=next(row for row in current['opportunities'] if row.product_id==body.product_id)
+        message=recommendation.presentation_note or 'Your feedback was recorded.'
+        return {'customer_id':customer_id,'interaction':interaction,'recommendation':recommendation,'message':message}
     @app.post('/customers/{customer_id}/scenario', response_model=ScenarioResponse)
     def scenario(customer_id:str, body:ScenarioRequest): return lookup(service().scenario,customer_id,body.changes)
     @lru_cache(maxsize=256)
