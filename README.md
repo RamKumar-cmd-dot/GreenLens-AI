@@ -50,8 +50,6 @@ A visual walkthrough of GreenLens AI, showcasing the application interface, the 
 |---|---|
 | ![Customer dashboard](docs/screenshots/customer-dashboard.png) | ![Business dashboard](docs/screenshots/business-dashboard.png) |
 
-![Exclusion example: existing EV owner is not recommended EV finance](docs/screenshots/ev-exclusion.png)
-
 ## The core idea: a strict division of roles
 
 The system never lets one component do another's job.
