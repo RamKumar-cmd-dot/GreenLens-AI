@@ -12,3 +12,4 @@ frontend/dist/
 *.sqlite
 *.sqlite-*
 *.log
+*.lock
