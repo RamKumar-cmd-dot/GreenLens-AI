@@ -1,6 +1,7 @@
 from typing import Any, Literal
 from datetime import datetime, timezone
 from pydantic import BaseModel, Field, model_validator
+from backend.scenarios import normalize_selection
 
 Scalar = str | float | int | bool | None
 Status = Literal['POTENTIAL_OPPORTUNITY', 'EXCLUDED', 'INSUFFICIENT_DATA', 'NEEDS_REVIEW']
@@ -129,10 +130,49 @@ class FeedbackResponse(BaseModel):
     message: str
 
 class ScenarioRequest(BaseModel):
-    changes: dict[str, Scalar]
+    apply: list[str] | None = None
+    # Kept for clients of the former two-button API; only its original EV and
+    # Paperless payloads are accepted and translated to canonical chip IDs.
+    changes: dict[str, Scalar] | None = None
+
+    @model_validator(mode='after')
+    def normalize_chips(self):
+        try:
+            self.apply = normalize_selection(self.apply, self.changes)
+        except ValueError as exc:
+            raise ValueError(str(exc)) from exc
+        return self
+
+
+class ScenarioChipNote(BaseModel):
+    chip_id: Literal['EV', 'GREEN_HOME', 'SOLAR', 'PAPERLESS']
+    changed_features: list[str]
+    note: str
+
+
+class ScenarioSide(BaseModel):
+    propensity: float = Field(ge=0, le=1)
+    status: Status
+    confidence_level: Literal['high', 'medium', 'low', 'unavailable']
+    reason_codes: list[str]
+    evidence: dict[str, Scalar]
+    impact: Impact
+
+
+class ScenarioComparison(BaseModel):
+    product_id: Literal['GP01', 'GP02', 'GP03', 'GP04']
+    product_name: str
+    baseline: ScenarioSide
+    scenario: ScenarioSide
 
 class ScenarioResponse(OpportunityResponse):
     scenario_changes: dict[str, Scalar]
+    applied_chips: list[str] = Field(default_factory=list)
+    changed_attributes: dict[str, Scalar] = Field(default_factory=dict)
+    original_attributes: dict[str, Scalar] = Field(default_factory=dict)
+    chip_notes: list[ScenarioChipNote] = Field(default_factory=list)
+    comparisons: list[ScenarioComparison] = Field(default_factory=list)
+    disclaimers: list[str] = Field(default_factory=list)
     synthetic: bool = True
 
 class Explanation(BaseModel):

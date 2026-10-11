@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+import pandas as pd
 from ml.common import FEATURES, TARGETS, VERSION
 from ml.eligibility import CATALOGUE, screen, missing
 from ml.inference import load_models, reasons, normalize, validation_score_band
@@ -6,6 +7,7 @@ from ml.confidence import assess_reliability
 from backend.schemas import Recommendation, Impact
 from backend.impact import estimate
 from backend.eligibility import assess
+from backend.scenarios import SCENARIO_PRESETS, normalize_selection
 
 def assemble(features, pid, score, metadata, threshold=None):
     if threshold is None:
@@ -77,18 +79,88 @@ class Recommendations:
                 update['presentation_note'] = 'Your reminder date passed; this opportunity is visible at its standard priority again.'
         return recommendation.model_copy(update=update)
 
-    def scenario(self, cid, changes):
-        allowed={'vehicle_ownership','vehicle_type','owns_ev','replacement_intent','homeowner','roof_suitable','paper_statements_enabled','electricity_kwh_year','gas_kwh_year','annual_mileage_estimate','digital_logins_month','digital_transaction_ratio'}
-        unknown=set(changes)-allowed
-        if unknown: raise ValueError(f'Unsupported scenario fields: {sorted(unknown)}')
+    def scenario(self, cid, apply=None, changes=None):
+        # Preserve direct callers of the former scenario(cid, changes) method.
+        if isinstance(apply,dict) and changes is None:
+            changes,apply=apply,None
+        chips = normalize_selection(apply, changes)
         if cid not in self.by_customer: raise KeyError(cid)
-        f=self.features.loc[self.features.customer_id==cid].iloc[0].to_dict()
-        f.update(changes)
-        f={**f,**normalize(f)}
-        import pandas as pd
+        original=self.features.loc[self.features.customer_id==cid].iloc[0].to_dict()
+        merged=dict(original)
+        overrides={}
+        notes=[]
+        for chip in chips:
+            preset=SCENARIO_PRESETS[chip]
+            changed=[]
+            for key,value in preset['overrides'].items():
+                before=merged.get(key)
+                if not _same_value(before,value): changed.append(key)
+                merged[key]=value
+                overrides[key]=value
+            note=preset['meaning']
+            if not changed:
+                note=f'No customer features changed: this profile already matches the {preset["label"]} preset. {note}'
+            if chip=='SOLAR' and original.get('region')!='London':
+                note += ' The regional PV impact remains unavailable because this profile has no supported regional yield.'
+            notes.append({'chip_id':chip,'changed_features':changed,'note':note})
+        changed_attributes={key:value for key,value in overrides.items() if key in original and not _same_value(original.get(key),value)}
+        original_attributes={key:_json_scalar(original[key]) for key in changed_attributes}
+        f={**merged,**normalize(merged)}
         row=pd.DataFrame([f],columns=FEATURES)
-        predictions=[]
-        for pid in TARGETS:
+        baseline_recommendations=self.by_customer[cid]
+        predictions=[]; comparisons=[]
+        for pid,baseline in zip(TARGETS,baseline_recommendations):
             score=float(self.models[pid].predict_proba(row)[0,1])
-            predictions.append(self._with_memory(cid, assemble(f,pid,score,self.models['metadata'],self.models['thresholds'][pid])))
-        return {'customer_id':cid,'opportunities':predictions,'scenario_changes':changes,'synthetic':True}
+            scenario=assemble(f,pid,score,self.models['metadata'],self.models['thresholds'][pid])
+            predictions.append(scenario)
+            comparisons.append({
+                'product_id':pid,
+                'product_name':scenario.product_name,
+                'baseline':_scenario_side(baseline),
+                'scenario':_scenario_side(scenario),
+            })
+        return {
+            'customer_id':cid,
+            'opportunities':predictions,
+            'scenario_changes':overrides,
+            'applied_chips':chips,
+            'changed_attributes':changed_attributes,
+            'original_attributes':original_attributes,
+            'chip_notes':notes,
+            'comparisons':comparisons,
+            'disclaimers':[
+                'This is a hypothetical synthetic customer state; no stored profile or customer preference was changed.',
+                'Propensity differences are model responses to changed inputs, not causal estimates of intervention effects or take-up.',
+                'Use-case screening is not financial eligibility or credit approval.',
+                'Environmental outputs are deterministic conditional scenarios, not realized savings; impacts across products are separate and must not be added.',
+            ],
+            'synthetic':True,
+        }
+
+
+def _same_value(left, right):
+    try:
+        if pd.isna(left) and pd.isna(right): return True
+    except (TypeError, ValueError):
+        pass
+    try: return bool(left == right)
+    except (TypeError, ValueError): return False
+
+
+def _json_scalar(value):
+    try:
+        if pd.isna(value): return None
+    except (TypeError, ValueError):
+        pass
+    return value.item() if hasattr(value,'item') else value
+
+
+def _scenario_side(recommendation):
+    return {
+        'propensity':recommendation.propensity,
+        'status':recommendation.status,
+        'confidence_level':recommendation.confidence_level,
+        'reason_codes':recommendation.reason_codes,
+        'evidence':recommendation.evidence,
+        'impact':recommendation.impact,
+    }

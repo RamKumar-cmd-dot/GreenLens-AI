@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {api,classify,runScenario,saveFeedback} from './api';
 const number=(v,d=0)=>v==null?'Unavailable':Number(v).toLocaleString('en-GB',{maximumFractionDigits:d});
 const money=v=>v==null?'Unavailable':`£${number(v,2)}`;
@@ -71,10 +71,45 @@ function Transactions({id}){
  const state=useData(`/customers/${id}/transactions?limit=10&offset=${page*10}${category?`&category=${encodeURIComponent(category)}`:''}`);
  return <section className="panel"><div className="section-heading"><div><span className="eyebrow">OBSERVED ACTIVITY</span><h2>Transaction history</h2></div><label>Category<select value={category} onChange={e=>setCategory(e.target.value)}><option value="">All categories</option>{['Fuel','Electricity','Gas','Public Transport','Home Improvement','Automotive','Utilities','Other'].map(c=><option key={c}>{c}</option>)}</select></label></div><Feedback state={state}/>{state.data&&<><div className="table-wrap"><table><thead><tr><th>Date</th><th>Merchant / description</th><th>Category</th><th>Amount</th><th>Model check</th></tr></thead><tbody>{state.data.items.map(t=><tr key={t.transaction_id}><td>{t.transaction_date}</td><td><strong>{t.merchant_name}</strong><small>{t.merchant_description}</small></td><td><span className="tag">{t.sustainability_category}</span></td><td>{money(t.amount_gbp)}</td><td><button className="text-button" onClick={()=>check(t)}>Classify</button></td></tr>)}</tbody></table></div><div className="pagination"><span>{state.data.total} transactions · synthetic reference categories</span><button disabled={page===0} onClick={()=>setPage(p=>p-1)}>Previous</button><button disabled={(page+1)*10>=state.data.total} onClick={()=>setPage(p=>p+1)}>Next</button></div>{classification&&<p role="status" className="note">{classification}</p>}</>}</section>;
 }
+const scenarioChips=[['EV','EV'],['GREEN_HOME','Green home'],['SOLAR','Solar'],['PAPERLESS','Paperless']];
+const impactSummary=impact=>impact?.impact_status==='ESTIMATED'
+ ? impact.avoided_kgco2e!=null?`${number(impact.avoided_kgco2e,1)} kgCO₂e annual scenario reduction`:impact.avoided_pages!=null?`${number(impact.avoided_pages)} pages/year`:impact.generation_kwh!=null?`${number(impact.generation_kwh)} kWh/year estimated generation`:'Estimated; see assumptions'
+ :`Unavailable: ${impact?.reason||'required inputs or supported factor are missing'}`;
 function ScenarioExplorer({id}){
- const [state,setState]=useState({data:null,error:null,loading:false});
- const run=async changes=>{setState({data:null,error:null,loading:true});try{setState({data:await runScenario(id,changes),error:null,loading:false});}catch(e){setState({data:null,error:e.message,loading:false});}};
- return <section className="panel"><span className="eyebrow">OPTIONAL WHAT-IF</span><h2>Scenario explorer</h2><p className="note">Change a synthetic circumstance and rerun the saved models and use-case rules. This does not change the customer record or estimate actual adoption.</p><div className="scenario-actions"><button disabled={state.loading} onClick={()=>run({vehicle_ownership:1,vehicle_type:'electric',owns_ev:1,replacement_intent:0})}>Simulate owning an EV</button><button disabled={state.loading} onClick={()=>run({paper_statements_enabled:0})}>Simulate switching to paperless</button></div>{state.loading&&<p role="status">Rerunning saved models…</p>}{state.error&&<p role="alert" className="error">{state.error}</p>}{state.data&&<><p className="note">Hypothetical changes: {Object.entries(state.data.scenario_changes).map(([k,v])=>`${words(k)} = ${v}`).join(' · ')}</p><div className="scenario-results">{state.data.opportunities.map(r=><div key={r.product_id}><strong>{r.product_id} · {r.product_name}</strong><span>{number(r.propensity*100,1)}% simulated propensity</span><span className={`badge ${r.status.toLowerCase()}`}>{words(r.status)}</span></div>)}</div></>}</section>;
+ const [selected,setSelected]=useState([]);
+ const [state,setState]=useState({data:null,error:null,loading:true});
+ const requestSequence=useRef(0);const activeRequest=useRef(null);
+ const run=async(chips,customerId=id)=>{
+  activeRequest.current?.abort();
+  const controller=new AbortController();activeRequest.current=controller;
+  const sequence=++requestSequence.current;
+  setState({data:null,error:null,loading:true});
+  try{
+   const data=await runScenario(customerId,chips,{signal:controller.signal});
+   if(sequence===requestSequence.current)setState({data,error:null,loading:false});
+  }catch(error){
+   if(error.name==='AbortError'||sequence!==requestSequence.current)return;
+   setState({data:null,error:error.message,loading:false});
+  }
+ };
+ useEffect(()=>{
+  setSelected([]);run([],id);
+  return ()=>{requestSequence.current+=1;activeRequest.current?.abort();};
+ },[id]);
+ const toggle=chip=>{const next=selected.includes(chip)?selected.filter(x=>x!==chip):[...selected,chip];setSelected(next);run(next,id);};
+ const clear=()=>{setSelected([]);run([],id);};
+ return <section className="panel scenario-explorer"><span className="eyebrow">OPTIONAL WHAT-IF</span><h2>Scenario explorer</h2><p className="note">Select any combination to compare the original synthetic profile with one merged hypothetical profile. Activating a chip does not record a customer preference, complete an intervention, or update the saved customer data.</p>
+  <div className="scenario-toggle-bar" role="group" aria-label="Simulate customer circumstances"><span>Simulate:</span>{scenarioChips.map(([chip,label])=><button key={chip} type="button" className={`scenario-chip ${selected.includes(chip)?'selected':''}`} aria-pressed={selected.includes(chip)} onClick={()=>toggle(chip)}>{label}</button>)}<button type="button" className="text-button" disabled={!selected.length&&!state.data} onClick={clear}>Clear all</button></div>
+  {state.loading&&<p role="status">Recomputing one merged scenario with the saved models and deterministic rules…</p>}
+  {state.error&&<p role="alert" className="error">{state.error} <button onClick={()=>run(selected,id)}>Retry</button></p>}
+  {state.data&&<>
+   <p className="note">{state.data.applied_chips?.length?`Applied: ${state.data.applied_chips.join(' · ')}`:'Baseline profile (no scenario chips selected)'}. These are feature-conditioned model outputs, not causal estimates.</p>
+   {Object.keys(state.data.changed_attributes||{}).length>0?<div className="scenario-attributes"><h3>Hypothetical profile changes</h3>{Object.entries(state.data.changed_attributes).map(([key,value])=><p key={key}><span>{words(key)}</span><strong>{String(state.data.original_attributes[key]??'Missing')}</strong><span aria-hidden="true">→</span><strong>{String(value)}</strong></p>)}</div>:<p className="note">No profile attributes differ from the original for this selection.</p>}
+   {state.data.chip_notes?.length>0&&<div className="scenario-notes"><h3>Scenario notes</h3>{state.data.chip_notes.map(item=><p key={item.chip_id}><strong>{scenarioChips.find(([chip])=>chip===item.chip_id)?.[1]}:</strong> {item.note}</p>)}</div>}
+   <div className="scenario-comparisons">{(state.data.comparisons||[]).map(item=><article className="scenario-product" key={item.product_id}><h3>{item.product_id} · {item.product_name}</h3><div className="scenario-pair">{[['Baseline',item.baseline],[state.data.applied_chips?.length?'Hypothetical':'Current profile',item.scenario]].map(([label,result])=><div key={label} className="scenario-side"><span className="eyebrow">{label}</span><strong>{number(result.propensity*100,1)}% predicted propensity</strong><span className={`badge ${result.status.toLowerCase()}`}>{words(result.status)}</span><span>Estimate reliability: {reliabilityText[result.confidence_level]||reliabilityText.unavailable}</span><p>{impactSummary(result.impact)}</p><small>Reasons: {result.reason_codes.map(words).join(', ')||'No rule-based reason codes'}</small>{Object.keys(result.evidence).length>0&&<small>Evidence: {Object.entries(result.evidence).map(([key,value])=>`${words(key)} ${value}`).join(' · ')}</small>}</div>)}</div></article>)}</div>
+   {state.data.disclaimers&&<ul className="scenario-disclaimers">{state.data.disclaimers.map(note=><li key={note}>{note}</li>)}</ul>}
+  </>}
+ </section>;
 }
 function CustomerView({id}){
  const customer=useData(`/customers/${id}`);const opportunities=useData(`/customers/${id}/opportunities`);const insights=useData(`/customers/${id}/insights`);

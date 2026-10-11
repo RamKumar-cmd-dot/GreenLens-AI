@@ -71,7 +71,7 @@ def create_app(db_path=None):
         message=recommendation.presentation_note or 'Your feedback was recorded.'
         return {'customer_id':customer_id,'interaction':interaction,'recommendation':recommendation,'message':message}
     @app.post('/customers/{customer_id}/scenario', response_model=ScenarioResponse)
-    def scenario(customer_id:str, body:ScenarioRequest): return lookup(service().scenario,customer_id,body.changes)
+    def scenario(customer_id:str, body:ScenarioRequest): return lookup(service().scenario,customer_id,body.apply)
     @lru_cache(maxsize=256)
     def explanations(customer_id):
         with ThreadPoolExecutor(max_workers=4) as executor:
