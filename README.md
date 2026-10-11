@@ -35,15 +35,14 @@ GreenLens AI analyses customer transactions and profiles to find opportunities f
 
 ## Demo video
 
-[![Watch the demo video](docs/screenshots/customer-dashboard.png)](YOUR_DRIVE_LINK)
+[![Watch the demo video]]
 
-**[▶ Watch the submission demo video on Google Drive](YOUR_DRIVE_LINK)**
+**[▶ Watch the submission demo video on Google Drive](https://drive.google.com/drive/folders/1MBBh-Ex-2sYGZAkLSur_l9AVuYL8ZxAA)**
 
-A rough walkthrough of GreenLens AI and how the model works: the four green products, how propensity, eligibility rules, the carbon engine and the LLM layer each play a separate role, and the app running on synthetic customers.
+A visual walkthrough of GreenLens AI, showcasing the application interface, the meaning of the different fields, and the Customer and Business views using synthetic customer data.
 
 > The video is hosted on Google Drive. If it asks for access, open the link in a browser signed in to any Google account, or use the download option in Drive.
 
-To see the same flow yourself, follow the [quick start](#quick-start) and the [demo customers](#try-the-demo).
 
 ## Screenshots
 
