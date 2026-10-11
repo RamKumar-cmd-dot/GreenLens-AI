@@ -1,6 +1,7 @@
 from ml.common import FEATURES, TARGETS, VERSION
 from ml.eligibility import CATALOGUE, screen, missing
 from ml.inference import load_models, reasons, normalize, validation_score_band
+from ml.confidence import assess_reliability
 from backend.schemas import Recommendation, Impact
 from backend.impact import estimate
 from backend.eligibility import assess
@@ -14,9 +15,11 @@ def assemble(features, pid, score, metadata, threshold=None):
     issues = rule['missing_or_conflicting']
     codes, evidence = reasons(pid, features)
     action = {'EXCLUDED':'Review the exclusion; no application is suggested.', 'INSUFFICIENT_DATA':'Confirm the missing information with your relationship team.', 'NEEDS_REVIEW':'Resolve conflicting information before considering this product.', 'POTENTIAL_OPPORTUNITY':'Explore the illustrative scenario with your relationship team; institutional checks still apply.'}[status]
+    reliability_assessment = assess_reliability(pid, features, score, load_models().get('confidence_reference'), issues)
     return Recommendation(customer_id=features['customer_id'], product_id=pid, product_name=CATALOGUE[pid]['name'], propensity=score,
         threshold_screen={'threshold':threshold,'above_threshold':score>=threshold,'status':'ABOVE_VALIDATION_SELECTED_THRESHOLD' if score>=threshold else 'BELOW_VALIDATION_SELECTED_THRESHOLD','selection_basis':'validation-set F1; statistical prioritization only'},
-        reliability={**metadata['products'][pid], 'status':'synthetic_validation_score_band_only', 'per_customer_confidence':'unavailable', 'validation_score_band':validation_score_band(pid,score), 'missing_feature_count':sum(missing(features.get(k)) for k in FEATURES)},
+        confidence=None, confidence_level=reliability_assessment['confidence_level'], confidence_method=reliability_assessment['confidence_method'],
+        reliability={**reliability_assessment['reliability'], **metadata['products'][pid], 'status':'validation_informed_synthetic_reliability', 'per_customer_confidence':'unavailable', 'validation_score_band':reliability_assessment['reliability']['details'].get('validation_score_band', validation_score_band(pid,score)), 'missing_feature_count':sum(missing(features.get(k)) for k in FEATURES)},
         status=status, applicable_exclusions=rule['applicable_exclusions'], missing_or_conflicting=issues, reason_codes=codes, evidence=evidence,
         data_timestamp=features['data_timestamp'],model_version=VERSION, impact=estimate(pid,features) if status=='POTENTIAL_OPPORTUNITY' else Impact(impact_status='UNAVAILABLE',reason='Use-case screening excludes this scenario or requires more information'), recommended_action=action)
 

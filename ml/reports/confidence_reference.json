@@ -1,0 +1,636 @@
+{
+  "method": "validation-informed reliability assessment v1",
+  "scope": "synthetic_validation_only",
+  "features": [
+    "monthly_income_gbp",
+    "mean_monthly_fuel",
+    "mean_monthly_electricity",
+    "mean_monthly_gas",
+    "mean_monthly_public_transport",
+    "mean_monthly_home_improvement",
+    "fuel_trend",
+    "homeowner",
+    "vehicle_ownership",
+    "owns_ev",
+    "annual_mileage_estimate",
+    "electricity_kwh_year",
+    "gas_kwh_year",
+    "digital_logins_month",
+    "mobile_app_active",
+    "paper_statements_enabled",
+    "digital_transaction_ratio",
+    "existing_mortgage",
+    "existing_vehicle_loan",
+    "roof_suitable",
+    "replacement_intent",
+    "household_size",
+    "age_band",
+    "region",
+    "employment_status",
+    "property_type",
+    "vehicle_type",
+    "heating_technology"
+  ],
+  "training_customer_count": 3500,
+  "validation_customer_count": 750,
+  "distribution_reference_split": "train only",
+  "validation_calibration_split": "validation only",
+  "products": {
+    "GP01": {
+      "critical": [
+        "vehicle_ownership",
+        "vehicle_type",
+        "owns_ev",
+        "replacement_intent"
+      ],
+      "supporting": [
+        "annual_mileage_estimate",
+        "mean_monthly_fuel",
+        "fuel_trend",
+        "existing_vehicle_loan"
+      ],
+      "numeric_bounds": {
+        "vehicle_ownership": {
+          "lower_01": 0.0,
+          "upper_99": 1.0,
+          "training_nonmissing": 3500
+        },
+        "owns_ev": {
+          "lower_01": 0.0,
+          "upper_99": 1.0,
+          "training_nonmissing": 3500
+        },
+        "replacement_intent": {
+          "lower_01": 0.0,
+          "upper_99": 1.0,
+          "training_nonmissing": 3500
+        },
+        "annual_mileage_estimate": {
+          "lower_01": 0.0,
+          "upper_99": 18057.71999999996,
+          "training_nonmissing": 3377
+        },
+        "mean_monthly_fuel": {
+          "lower_01": 0.0,
+          "upper_99": 228.84968333333285,
+          "training_nonmissing": 3500
+        },
+        "fuel_trend": {
+          "lower_01": -85.74556666666668,
+          "upper_99": 86.56043333333315,
+          "training_nonmissing": 3500
+        },
+        "existing_vehicle_loan": {
+          "lower_01": 0.0,
+          "upper_99": 1.0,
+          "training_nonmissing": 3500
+        }
+      },
+      "categorical_values": {
+        "vehicle_type": [
+          "diesel",
+          "electric",
+          "none",
+          "petrol"
+        ]
+      },
+      "training_missing_rates": {
+        "vehicle_ownership": 0.0,
+        "vehicle_type": 0.0,
+        "owns_ev": 0.0,
+        "replacement_intent": 0.0,
+        "annual_mileage_estimate": 0.03514285714285714,
+        "mean_monthly_fuel": 0.0,
+        "fuel_trend": 0.0,
+        "existing_vehicle_loan": 0.0
+      },
+      "validation": {
+        "n": 750,
+        "brier": 0.09363424018927852,
+        "ece": 0.021001132544154377,
+        "bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "n": 300,
+            "validation_customers": 300,
+            "mean_probability": 0.020567990794784226,
+            "observed_rate": 0.016666666666666666,
+            "observed_simulated_takeup_rate": 0.016666666666666666,
+            "observed_rate_wilson_95_interval": [
+              0.00713947735063333,
+              0.0384153948330945
+            ]
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 284,
+            "validation_customers": 284,
+            "mean_probability": 0.1423338646964356,
+            "observed_rate": 0.1267605633802817,
+            "observed_simulated_takeup_rate": 0.1267605633802817,
+            "observed_rate_wilson_95_interval": [
+              0.09298499989612119,
+              0.17049844384204527
+            ]
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.30000000000000004,
+            "n": 64,
+            "validation_customers": 64,
+            "mean_probability": 0.240901652295597,
+            "observed_rate": 0.203125,
+            "observed_simulated_takeup_rate": 0.203125,
+            "observed_rate_wilson_95_interval": [
+              0.12273417819183653,
+              0.3171363573101416
+            ]
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 74,
+            "validation_customers": 74,
+            "mean_probability": 0.34434103217959655,
+            "observed_rate": 0.3783783783783784,
+            "observed_simulated_takeup_rate": 0.3783783783783784,
+            "observed_rate_wilson_95_interval": [
+              0.2764753469106077,
+              0.4922854102398646
+            ]
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 27,
+            "validation_customers": 27,
+            "mean_probability": 0.4370241758848429,
+            "observed_rate": 0.25925925925925924,
+            "observed_simulated_takeup_rate": 0.25925925925925924,
+            "observed_rate_wilson_95_interval": [
+              0.1317037456190719,
+              0.44678571314553067
+            ]
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "n": 1,
+            "validation_customers": 1,
+            "mean_probability": 0.5784875186260227,
+            "observed_rate": 1.0,
+            "observed_simulated_takeup_rate": 1.0,
+            "observed_rate_wilson_95_interval": [
+              0.20654931437723745,
+              1.0
+            ]
+          }
+        ]
+      }
+    },
+    "GP02": {
+      "critical": [
+        "homeowner",
+        "property_type"
+      ],
+      "supporting": [
+        "electricity_kwh_year",
+        "gas_kwh_year",
+        "heating_technology",
+        "existing_mortgage"
+      ],
+      "numeric_bounds": {
+        "homeowner": {
+          "lower_01": 0.0,
+          "upper_99": 1.0,
+          "training_nonmissing": 3401
+        },
+        "electricity_kwh_year": {
+          "lower_01": 813.96,
+          "upper_99": 18249.059999999976,
+          "training_nonmissing": 3500
+        },
+        "gas_kwh_year": {
+          "lower_01": 0.0,
+          "upper_99": 25143.059999999998,
+          "training_nonmissing": 3500
+        },
+        "existing_mortgage": {
+          "lower_01": 0.0,
+          "upper_99": 1.0,
+          "training_nonmissing": 3500
+        }
+      },
+      "categorical_values": {
+        "property_type": [
+          "detached",
+          "flat",
+          "semi_detached",
+          "terraced"
+        ],
+        "heating_technology": [
+          "electric_resistance",
+          "gas_boiler",
+          "heat_pump"
+        ]
+      },
+      "training_missing_rates": {
+        "homeowner": 0.028285714285714286,
+        "property_type": 0.0,
+        "electricity_kwh_year": 0.0,
+        "gas_kwh_year": 0.0,
+        "heating_technology": 0.0,
+        "existing_mortgage": 0.0
+      },
+      "validation": {
+        "n": 750,
+        "brier": 0.09387468155226543,
+        "ece": 0.018903625605954474,
+        "bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "n": 369,
+            "validation_customers": 369,
+            "mean_probability": 0.016506199170904203,
+            "observed_rate": 0.018970189701897018,
+            "observed_simulated_takeup_rate": 0.018970189701897018,
+            "observed_rate_wilson_95_interval": [
+              0.009218881471308518,
+              0.0386337872665702
+            ]
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 219,
+            "validation_customers": 219,
+            "mean_probability": 0.151613489548261,
+            "observed_rate": 0.1872146118721461,
+            "observed_simulated_takeup_rate": 0.1872146118721461,
+            "observed_rate_wilson_95_interval": [
+              0.14110726007063643,
+              0.24410588327790497
+            ]
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.30000000000000004,
+            "n": 127,
+            "validation_customers": 127,
+            "mean_probability": 0.24170052041702125,
+            "observed_rate": 0.2283464566929134,
+            "observed_simulated_takeup_rate": 0.2283464566929134,
+            "observed_rate_wilson_95_interval": [
+              0.16395562230102462,
+              0.3086885944333823
+            ]
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 30,
+            "validation_customers": 30,
+            "mean_probability": 0.3323621837145602,
+            "observed_rate": 0.26666666666666666,
+            "observed_simulated_takeup_rate": 0.26666666666666666,
+            "observed_rate_wilson_95_interval": [
+              0.14182663319596317,
+              0.4444796169518888
+            ]
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 4,
+            "validation_customers": 4,
+            "mean_probability": 0.4456023854637063,
+            "observed_rate": 0.75,
+            "observed_simulated_takeup_rate": 0.75,
+            "observed_rate_wilson_95_interval": [
+              0.30064184258240184,
+              0.9544127391902995
+            ]
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "n": 1,
+            "validation_customers": 1,
+            "mean_probability": 0.5874388470549897,
+            "observed_rate": 0.0,
+            "observed_simulated_takeup_rate": 0.0,
+            "observed_rate_wilson_95_interval": [
+              0.0,
+              0.7934506856227626
+            ]
+          }
+        ]
+      }
+    },
+    "GP03": {
+      "critical": [
+        "homeowner",
+        "roof_suitable"
+      ],
+      "supporting": [
+        "property_type",
+        "electricity_kwh_year",
+        "region",
+        "household_size"
+      ],
+      "numeric_bounds": {
+        "homeowner": {
+          "lower_01": 0.0,
+          "upper_99": 1.0,
+          "training_nonmissing": 3401
+        },
+        "roof_suitable": {
+          "lower_01": 0.0,
+          "upper_99": 1.0,
+          "training_nonmissing": 3500
+        },
+        "electricity_kwh_year": {
+          "lower_01": 813.96,
+          "upper_99": 18249.059999999976,
+          "training_nonmissing": 3500
+        },
+        "household_size": {
+          "lower_01": 1.0,
+          "upper_99": 5.0,
+          "training_nonmissing": 3500
+        }
+      },
+      "categorical_values": {
+        "property_type": [
+          "detached",
+          "flat",
+          "semi_detached",
+          "terraced"
+        ],
+        "region": [
+          "London",
+          "Midlands",
+          "North West",
+          "Scotland",
+          "South East",
+          "Wales"
+        ]
+      },
+      "training_missing_rates": {
+        "homeowner": 0.028285714285714286,
+        "roof_suitable": 0.0,
+        "property_type": 0.0,
+        "electricity_kwh_year": 0.0,
+        "region": 0.0,
+        "household_size": 0.0
+      },
+      "validation": {
+        "n": 750,
+        "brier": 0.05149570941224096,
+        "ece": 0.010606848734985356,
+        "bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "n": 523,
+            "validation_customers": 523,
+            "mean_probability": 0.005599858740836161,
+            "observed_rate": 0.0057361376673040155,
+            "observed_simulated_takeup_rate": 0.0057361376673040155,
+            "observed_rate_wilson_95_interval": [
+              0.0019526823342896167,
+              0.016727432254117477
+            ]
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 114,
+            "validation_customers": 114,
+            "mean_probability": 0.14675920937050013,
+            "observed_rate": 0.15789473684210525,
+            "observed_simulated_takeup_rate": 0.15789473684210525,
+            "observed_rate_wilson_95_interval": [
+              0.10227261187561021,
+              0.23582112202254457
+            ]
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.30000000000000004,
+            "n": 65,
+            "validation_customers": 65,
+            "mean_probability": 0.23757139085516876,
+            "observed_rate": 0.2153846153846154,
+            "observed_simulated_takeup_rate": 0.2153846153846154,
+            "observed_rate_wilson_95_interval": [
+              0.1328675769115102,
+              0.3296656024568853
+            ]
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 18,
+            "validation_customers": 18,
+            "mean_probability": 0.349573880294626,
+            "observed_rate": 0.2222222222222222,
+            "observed_simulated_takeup_rate": 0.2222222222222222,
+            "observed_rate_wilson_95_interval": [
+              0.09000928108601694,
+              0.45214584316212625
+            ]
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 12,
+            "validation_customers": 12,
+            "mean_probability": 0.4503394850065838,
+            "observed_rate": 0.4166666666666667,
+            "observed_simulated_takeup_rate": 0.4166666666666667,
+            "observed_rate_wilson_95_interval": [
+              0.19326031365875665,
+              0.6804886874504503
+            ]
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "n": 9,
+            "validation_customers": 9,
+            "mean_probability": 0.5459029598608441,
+            "observed_rate": 0.7777777777777778,
+            "observed_simulated_takeup_rate": 0.7777777777777778,
+            "observed_rate_wilson_95_interval": [
+              0.45258896910698887,
+              0.9367748928821533
+            ]
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "n": 3,
+            "validation_customers": 3,
+            "mean_probability": 0.6731843963409293,
+            "observed_rate": 0.6666666666666666,
+            "observed_simulated_takeup_rate": 0.6666666666666666,
+            "observed_rate_wilson_95_interval": [
+              0.2076596008020477,
+              0.9385080552796037
+            ]
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.7999999999999999,
+            "n": 4,
+            "validation_customers": 4,
+            "mean_probability": 0.7539965736791878,
+            "observed_rate": 0.75,
+            "observed_simulated_takeup_rate": 0.75,
+            "observed_rate_wilson_95_interval": [
+              0.30064184258240184,
+              0.9544127391902995
+            ]
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "n": 2,
+            "validation_customers": 2,
+            "mean_probability": 0.8232721875134191,
+            "observed_rate": 1.0,
+            "observed_simulated_takeup_rate": 1.0,
+            "observed_rate_wilson_95_interval": [
+              0.34238022750665303,
+              1.0
+            ]
+          }
+        ]
+      }
+    },
+    "GP04": {
+      "critical": [
+        "paper_statements_enabled",
+        "digital_logins_month"
+      ],
+      "supporting": [
+        "mobile_app_active",
+        "digital_transaction_ratio",
+        "age_band"
+      ],
+      "numeric_bounds": {
+        "paper_statements_enabled": {
+          "lower_01": 0.0,
+          "upper_99": 1.0,
+          "training_nonmissing": 3500
+        },
+        "digital_logins_month": {
+          "lower_01": 2.0,
+          "upper_99": 30.0,
+          "training_nonmissing": 3500
+        },
+        "mobile_app_active": {
+          "lower_01": 0.0,
+          "upper_99": 1.0,
+          "training_nonmissing": 3500
+        },
+        "digital_transaction_ratio": {
+          "lower_01": 0.152776,
+          "upper_99": 0.9617049999999999,
+          "training_nonmissing": 3500
+        }
+      },
+      "categorical_values": {
+        "age_band": [
+          "18-29",
+          "30-44",
+          "45-59",
+          "60+"
+        ]
+      },
+      "training_missing_rates": {
+        "paper_statements_enabled": 0.0,
+        "digital_logins_month": 0.0,
+        "mobile_app_active": 0.0,
+        "digital_transaction_ratio": 0.0,
+        "age_band": 0.0
+      },
+      "validation": {
+        "n": 750,
+        "brier": 0.09998906819576502,
+        "ece": 0.05726646866303266,
+        "bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "n": 398,
+            "validation_customers": 398,
+            "mean_probability": 0.06356890374334827,
+            "observed_rate": 0.0,
+            "observed_simulated_takeup_rate": 0.0,
+            "observed_rate_wilson_95_interval": [
+              0.0,
+              0.009559637853117154
+            ]
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 34,
+            "validation_customers": 34,
+            "mean_probability": 0.14206996479191952,
+            "observed_rate": 0.058823529411764705,
+            "observed_simulated_takeup_rate": 0.058823529411764705,
+            "observed_rate_wilson_95_interval": [
+              0.016282655210122746,
+              0.19093606904280996
+            ]
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.30000000000000004,
+            "n": 94,
+            "validation_customers": 94,
+            "mean_probability": 0.2520808440437509,
+            "observed_rate": 0.22340425531914893,
+            "observed_simulated_takeup_rate": 0.22340425531914893,
+            "observed_rate_wilson_95_interval": [
+              0.151019162326953,
+              0.3175087947704972
+            ]
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 144,
+            "validation_customers": 144,
+            "mean_probability": 0.35083183353365427,
+            "observed_rate": 0.4236111111111111,
+            "observed_simulated_takeup_rate": 0.4236111111111111,
+            "observed_rate_wilson_95_interval": [
+              0.34592020670525975,
+              0.5052717378582597
+            ]
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 80,
+            "validation_customers": 80,
+            "mean_probability": 0.42945957883462194,
+            "observed_rate": 0.45,
+            "observed_simulated_takeup_rate": 0.45,
+            "observed_rate_wilson_95_interval": [
+              0.34577689184711224,
+              0.5588049211064404
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

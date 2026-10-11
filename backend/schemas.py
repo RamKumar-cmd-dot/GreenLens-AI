@@ -62,6 +62,8 @@ class Recommendation(BaseModel):
     propensity: float = Field(ge=0, le=1)
     threshold_screen: dict[str, Scalar]
     confidence: float | None = None
+    confidence_level: Literal['high', 'medium', 'low', 'unavailable'] = 'unavailable'
+    confidence_method: str = 'validation-informed reliability assessment v1'
     reliability: dict[str, Any]
     status: Status
     financial_eligibility: str = 'NOT_ASSESSED'

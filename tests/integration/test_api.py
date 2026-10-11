@@ -20,6 +20,10 @@ def test_milestone_a(client):
     result=client.get('/customers/C000025/opportunities').json()['opportunities']
     assert {r['product_id'] for r in result}=={'GP01','GP02','GP03','GP04'}
     assert all(0<=r['propensity']<=1 for r in result)
+    assert all(r['confidence'] is None for r in result)
+    assert all(r['confidence_level'] in {'high','medium','low','unavailable'} for r in result)
+    assert all(r['confidence_method']=='validation-informed reliability assessment v1' for r in result)
+    assert all(r['reliability']['scope']=='synthetic_validation_only' and isinstance(r['reliability']['reason_codes'],list) for r in result)
     assert all(0<=r['threshold_screen']['threshold']<=1 for r in result)
     assert all(r['threshold_screen']['above_threshold']==(r['propensity']>=r['threshold_screen']['threshold']) for r in result)
     scenario=client.post('/customers/C000025/scenario',json={'changes':{'vehicle_ownership':1,'vehicle_type':'electric','owns_ev':1,'replacement_intent':0}})

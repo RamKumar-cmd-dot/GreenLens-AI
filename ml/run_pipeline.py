@@ -50,6 +50,11 @@ def main(argv=None):
     if args.refresh_metrics:
         from ml.evaluate import render
         render()
+    if args.retrain_models or args.rebuild_features:
+        # Reliability bounds follow the newly established customer split and
+        # model validation reports; ordinary audit runs remain read-only.
+        from ml.confidence import save_reference
+        save_reference()
     if args.regenerate_data or args.rebuild_features:
         from ml.inference import load_models, predict_customer
         load_models.cache_clear()
