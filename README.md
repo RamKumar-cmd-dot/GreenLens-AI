@@ -10,6 +10,7 @@
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-1.9.1-F7931E?logo=scikitlearn&logoColor=white)
 ![Data](https://img.shields.io/badge/data-100%25%20synthetic-64748B)
+[![Demo video](https://img.shields.io/badge/%E2%96%B6%20Demo%20video-Google%20Drive-124130)](YOUR_DRIVE_LINK)
 
 Built by **Team 43** (Ram Kumar, Sai Jaswanth, Koushik, Abhinav Tej, Karthikeya) for **Megathon X: Singularity**, Problem Statement 1 (Lloyds): *Green Customer Insights Platform*.
 
@@ -31,6 +32,18 @@ GreenLens AI analyses customer transactions and profiles to find opportunities f
 | **GP04** | Paperless Banking | Paper statements, high digital activity |
 
 > **Everything is fictional.** All customers, transactions and take-up labels are synthetic. No real banking data is used anywhere in this repository.
+
+## Demo video
+
+[![Watch the demo video](docs/screenshots/customer-dashboard.png)](YOUR_DRIVE_LINK)
+
+**[▶ Watch the submission demo video on Google Drive](YOUR_DRIVE_LINK)**
+
+A rough walkthrough of GreenLens AI and how the model works: the four green products, how propensity, eligibility rules, the carbon engine and the LLM layer each play a separate role, and the app running on synthetic customers.
+
+> The video is hosted on Google Drive. If it asks for access, open the link in a browser signed in to any Google account, or use the download option in Drive.
+
+To see the same flow yourself, follow the [quick start](#quick-start) and the [demo customers](#try-the-demo).
 
 ## Screenshots
 
@@ -141,35 +154,82 @@ Privacy, bias, hallucination controls, human oversight and data limits are cover
 
 ## Quick start
 
-**Requirements:** Python 3.12, Node.js 18+ (for the frontend). Python 3.12 matters: the saved models were built with scikit-learn 1.9.1.
+Everything needed to run GreenLens AI is already in the repository: the synthetic data, the **trained models** and the evaluation reports. After cloning you only need to install the dependencies, verify, and start the app. **No training step is required.**
+
+### Prerequisites
+
+| Tool | Version | Notes |
+|---|---|---|
+| Python | **3.12** | Required. The saved models were trained with Python 3.12 and scikit-learn 1.9.1. |
+| Node.js | 18 or newer | For the React frontend (includes `npm`). |
+| Git | any recent | To clone the repository. |
+| `uv` (optional) | any | Faster installs. Plain `pip` works too. |
+
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/greenlens-ai.git
-cd greenlens-ai
-
-# Backend environment
-uv venv --python 3.12            # or: python3.12 -m venv .venv
-source .venv/bin/activate        # Windows PowerShell: .venv\Scripts\Activate.ps1
-uv pip install -r requirements-api.txt   # or: pip install -r requirements-api.txt
+git clone https://github.com/RamKumar-cmd-dot/GreenLens-AI.git
+cd GreenLens-AI
 ```
 
-Optional checks (read-only, no training):
+### 2. Create the Python environment and install dependencies
 
 ```bash
-python -m ml.run_pipeline        # reloads saved models, verifies splits and metrics
+# Linux / macOS / WSL
+python3.12 -m venv .venv          # or: uv venv --python 3.12
+source .venv/bin/activate
+pip install -r requirements-api.txt      # or: uv pip install -r requirements-api.txt
+```
+
+```powershell
+# Windows PowerShell
+py -3.12 -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements-api.txt
+```
+
+Your prompt should now start with `(.venv)`. Use `requirements-api.txt` for setup. The `*.lock.txt` files record the exact versions that were tested. The installs are large (pandas, NumPy, scikit-learn), so the first run takes a few minutes.
+
+> **Keep the pinned versions.** The trained models are serialised scikit-learn objects. Installing a different scikit-learn version can make them fail to load (typically with an `AttributeError` mentioning `ColumnTransformer`).
+
+### 3. Verify the models and data (read-only)
+
+```bash
+python -m ml.run_pipeline
 python -m pytest -q
 ```
 
-**Start the API**
+- `ml.run_pipeline` **does not train anything.** It checks the data tables, Customer 360 features and customer splits, reloads the four saved propensity models and the transaction classifier, and confirms their predictions match the stored validation and test metrics. It ends with `All four saved pipelines reproduce their recorded validation/test metrics; no models fitted.`
+- `pytest` runs the automated tests.
+
+### 4. Optional configuration
+
+Defaults work without any setup. To change them, export environment variables in your shell (see `.env.example`; there is no frontend `.env`).
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `LLM_ENABLED` | `true` | Set to `false` for deterministic, offline explanations. **Recommended for demos.** |
+| `OPENAI_API_KEY` | not set | Only needed to try a live LLM provider. Keep it on the backend. |
+| `OPENAI_MODEL` | `gpt-4.1-mini` | Model used when the LLM is enabled. |
+| `GREENLENS_DB` | `data/processed/greenlens.sqlite` | Location of the SQLite snapshot. |
+| `CORS_ORIGINS` | `http://localhost:5173` | Allowed frontend origins. |
+
+### 5. Start the backend
 
 ```bash
+# Linux / macOS / WSL
 LLM_ENABLED=false python -m uvicorn backend.app:app --reload
-# PowerShell: $env:LLM_ENABLED="false"; python -m uvicorn backend.app:app --reload
 ```
 
-Wait for `Application startup complete`. API docs: <http://localhost:8000/docs>
+```powershell
+# Windows PowerShell
+$env:LLM_ENABLED="false"
+python -m uvicorn backend.app:app --reload
+```
 
-**Start the UI** (second terminal)
+Wait for **`Application startup complete.`** On the **first start** the backend builds the SQLite snapshot (`greenlens.sqlite`) from the CSV files, importing about 368,000 transactions, so it takes longer than later starts. The snapshot is git-ignored and is rebuilt automatically only when the source data changes. API docs: <http://localhost:8000/docs>
+
+### 6. Start the frontend (second terminal)
 
 ```bash
 cd frontend
@@ -177,7 +237,18 @@ npm ci
 npm run dev
 ```
 
-Open <http://localhost:5173>.
+Open <http://localhost:5173>. The dev server proxies API calls to `localhost:8000`, so keep the backend running.
+
+### What comes with the clone
+
+| Item | Location | In the repo? |
+|---|---|---|
+| Trained models (4 propensity pipelines + transaction classifier) | `ml/models/` | Yes, **no training needed** |
+| Synthetic data (5,000 customers, about 368k transactions) | `data/synthetic/`, `data/processed/` | Yes |
+| Evaluation reports and held-out predictions | `ml/reports/` | Yes |
+| Emission factors and LLM evaluation cases | `data/reference/` | Yes |
+| SQLite snapshot | `data/processed/greenlens.sqlite` | No, built on first backend start |
+| Low Carbon London raw files (about 8 GB, optional) | `data/external/` | No, git-ignored and not needed to run the app |
 
 ### Try the demo
 
@@ -187,9 +258,33 @@ Open <http://localhost:5173>.
 | **C000042** | Existing EV, no replacement use case: product **excluded** by rule |
 | **C000018** | London customer: scenario explorer and solar scenario |
 
-Then open the **Business intelligence** view and drill down from segment to customer.
+Then open the **Business intelligence** view and drill down from segment to customer. Step-by-step script: [`docs/demo_script.md`](docs/demo_script.md).
 
-`LLM_ENABLED=false` keeps explanations deterministic and offline. To try a live provider, copy `.env.example` to `.env`, set `OPENAI_API_KEY` on the **backend only**, and leave `LLM_ENABLED=true`.
+### Retrain the models (optional, replaces saved artifacts)
+
+You do **not** need this to run or verify the project. Retraining replaces the saved data, models and reports, and every reported number will change. Back up the repo first.
+
+```bash
+# Rebuild features and retrain models from the existing synthetic data
+python -m ml.run_pipeline --rebuild-features --retrain-models --confirm-overwrite
+
+# Regenerate the whole synthetic cohort, then rebuild and retrain
+python -m ml.run_pipeline --regenerate-data --rebuild-features --retrain-models --confirm-overwrite
+```
+
+The `--confirm-overwrite` flag is required whenever existing files would be replaced. A new cohort must always be followed by a retrain so data and models stay aligned. Thresholds are selected on validation data only, so do not tune repeatedly against the held-out test set. More options are in [`docs/reproduction.md`](docs/reproduction.md).
+
+### Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| `uvicorn: command not found` | The environment isn't active. Run `source .venv/bin/activate` (or `.venv\Scripts\Activate.ps1`), or use `python -m uvicorn`. |
+| Error loading models, or `AttributeError` about `ColumnTransformer` | Wrong scikit-learn version. Use Python 3.12 in a fresh `.venv` and install from `requirements-api.txt`. |
+| Backend stuck at "Waiting for application startup" | First start is building the SQLite snapshot. Wait a minute or two. On WSL, keep the project in the Linux home folder (`~/`), not `/mnt/c`, for much faster startup. |
+| Frontend shows `ECONNREFUSED 127.0.0.1:8000` | The backend isn't running. Start it and wait for "startup complete". |
+| `Address already in use` | Use `--port 8001` and update the proxy target in `frontend/vite.config.js`. |
+| `npm: command not found` | Install Node.js 18 or newer (for example via `nvm`). |
+| PowerShell blocks activating the environment | Run `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned` once. |
 
 ## API
 
@@ -245,9 +340,9 @@ GreenLens AI was built by five people, each owning one workstream of roughly equ
 | Member | GitHub | Workstream | Main areas of the repo |
 |---|---|---|---|
 | **Ram Kumar** | [@RamKumar-cmd-dot](https://github.com/RamKumar-cmd-dot) | Data engineering and labels | `data/`, `ml/feature_engineering.py` |
-| **Sai Jaswanth** | [@venkatasai230907-blip](https://github.com/venkatasai230907-blip) | Machine learning and evaluation | `ml/` (models, evaluation, reports) |
-| **Koushik** | [@junnurukoushik22](https://github.com/junnurukoushik22) | Carbon engine and eligibility rules | `backend/impact.py`, `backend/eligibility.py` |
-| **Abhinav Tej** | [@pnsabhinavtej](https://github.com/pnsabhinavtej) | LLM layer, API and Responsible AI | `backend/`, `tests/`, `docs/responsible_ai.md` |
+| **Abhinav Tej** | [@pnsabhinavtej](https://github.com/pnsabhinavtej) | Machine learning and evaluation | `ml/` (models, evaluation, reports) |
+| **Sai Jaswanth** | [@venkatasai230907-blip](https://github.com/venkatasai230907-blip) | Carbon engine and eligibility rules | `backend/impact.py`, `backend/eligibility.py` |
+| **Koushik** | [@junnurukoushik22](https://github.com/junnurukoushik22) | LLM layer, API and Responsible AI | `backend/`, `tests/`, `docs/responsible_ai.md` |
 | **Karthikeya** | [@Karthikeya-lolugu](https://github.com/Karthikeya-lolugu) | Frontend, demo and presentation | `frontend/`, `docs/demo_script.md` |
 
 ### Ram Kumar: data engineering and labels
@@ -258,7 +353,7 @@ GreenLens AI was built by five people, each owning one workstream of roughly equ
 - Set up the repository, README and final submission.
 - **Main files:** `data/generate_synthetic.py`, `data/schemas/`, `data/processed/`, `ml/feature_engineering.py`, `docs/synthetic_methodology.md`, `docs/data_dictionary.md`
 
-### Sai Jaswanth: machine learning and evaluation
+### Abhinav Tej: machine learning and evaluation
 - Trained the four propensity models (GP01 to GP04), choosing between logistic regression and random forest by validation Brier score.
 - Built the TF-IDF transaction classifier for the 8 sustainability categories, with a rule-based baseline for comparison.
 - Compared every model with simple baselines, checked calibration, and selected prioritisation thresholds on validation data only.
@@ -266,14 +361,14 @@ GreenLens AI was built by five people, each owning one workstream of roughly equ
 - Wrote the read-only artifact audit (`python -m ml.run_pipeline`) that reloads the saved models and reproduces the recorded metrics.
 - **Main files:** `ml/propensity_models.py`, `ml/transaction_classifier.py`, `ml/evaluate*.py`, `ml/tune_thresholds.py`, `ml/run_pipeline.py`, `ml/reports/`, `docs/model_evaluation.md`, `docs/ml_methodology.md`
 
-### Koushik: carbon engine and eligibility rules
+### Sai Jaswanth: carbon engine and eligibility rules
 - Built the deterministic carbon engine using 2025 UK DESNZ conversion factors: EV transport scenario, Green Home gas-efficiency scenario, London solar scenario and paperless pages avoided.
 - Made missing inputs return `UNAVAILABLE` instead of guessing, and kept the documented assumptions and sources in one place.
 - Wrote the use-case rules and exclusions (for example existing EV owner with no replacement, already paperless, conflicting vehicle data), and the reason codes behind each recommendation.
 - Assembled the recommendation engine so propensity never overrides a rule and rules never feed back into the model.
 - **Main files:** `backend/impact.py`, `backend/eligibility.py`, `ml/eligibility.py`, `backend/recommendations.py`, `data/reference/emission_factors_2025.json`, `docs/sustainability_methodology.md`
 
-### Abhinav Tej: LLM layer, API and Responsible AI
+### Koushik: LLM layer, API and Responsible AI
 - Built the FastAPI backend: typed endpoints, schemas and the SQLite snapshot store.
 - Designed the constrained LLM explanation layer. The LLM only selects from pre-approved sentences, outputs are validated against the structured data, and a deterministic fallback is used if anything fails.
 - Wrote the offline guardrail evaluation (28/28 groundedness, factual accuracy, completeness and numerical-consistency cases, plus 4/4 missing or conflicting input checks).
