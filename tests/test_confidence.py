@@ -62,7 +62,10 @@ def test_multiple_missing_unseen_category_and_extreme_numeric_are_flagged():
     assert "UNSEEN_CATEGORICAL_VALUE" in result["reliability"]["reason_codes"]
     f["electricity_kwh_year"] = 1_000_000
     result = assess_reliability("GP03", f, 0.05, ref)
-    assert "NUMERIC_FEATURE_OUTSIDE_TRAINING_RANGE" in result["reliability"]["reason_codes"]
+    assert (
+        "NUMERIC_FEATURE_OUTSIDE_TRAINING_RANGE"
+        in result["reliability"]["reason_codes"]
+    )
     f["homeowner"] = np.nan
     f["roof_suitable"] = np.nan
     result = assess_reliability("GP03", f, 0.05, ref)
@@ -71,12 +74,22 @@ def test_multiple_missing_unseen_category_and_extreme_numeric_are_flagged():
 
 def test_conflicting_data_degrades_reliability_without_changing_eligibility_or_propensity():
     base = customer_features()
-    features = {**base, "customer_id": "confidence-test", "owns_ev": 1, "vehicle_type": "petrol", "vehicle_ownership": 1}
+    features = {
+        **base,
+        "customer_id": "confidence-test",
+        "owns_ev": 1,
+        "vehicle_type": "petrol",
+        "vehicle_ownership": 1,
+    }
     before = dict(features)
     rows = predict_opportunities(features)["opportunities"]
     ev = next(row for row in rows if row["product_id"] == "GP01")
     models = load_models()
-    expected_propensity = float(models["GP01"].predict_proba(pd.DataFrame([normalize(features)], columns=FEATURES))[0, 1])
+    expected_propensity = float(
+        models["GP01"].predict_proba(
+            pd.DataFrame([normalize(features)], columns=FEATURES)
+        )[0, 1]
+    )
     assert ev["propensity"] == expected_propensity
     assert features == before
     assert ev["eligibility"] == screen("GP01", normalize(features))
@@ -88,11 +101,18 @@ def test_all_missing_and_four_product_output_contract():
     result = predict_opportunities({"customer_id": "all-missing"})
     assert {row["product_id"] for row in result["opportunities"]} == set(TARGETS)
     assert all(row["confidence"] is None for row in result["opportunities"])
-    assert all(row["confidence_level"] == "unavailable" for row in result["opportunities"])
-    assert all("NO_PRODUCT_RELEVANT_FEATURES_AVAILABLE" in row["reliability"]["reason_codes"] for row in result["opportunities"])
+    assert all(
+        row["confidence_level"] == "unavailable" for row in result["opportunities"]
+    )
+    assert all(
+        "NO_PRODUCT_RELEVANT_FEATURES_AVAILABLE" in row["reliability"]["reason_codes"]
+        for row in result["opportunities"]
+    )
     json.dumps(result, allow_nan=False)
 
 
 def test_reliability_map_matches_four_product_input_contract():
     assert set(PRODUCT_INPUTS) == set(TARGETS)
-    assert all(group["critical"] and group["supporting"] for group in PRODUCT_INPUTS.values())
+    assert all(
+        group["critical"] and group["supporting"] for group in PRODUCT_INPUTS.values()
+    )

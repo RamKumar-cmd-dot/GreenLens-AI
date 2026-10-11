@@ -4,6 +4,7 @@ The module deliberately returns no numerical confidence score. It combines
 product-specific input coverage, training-distribution familiarity and
 validation score-band support into a documented qualitative reliability tier.
 """
+
 from __future__ import annotations
 
 import json
@@ -17,19 +18,38 @@ import pandas as pd
 from ml.common import CATEGORICAL, DATA, FEATURES, NUMERIC, REPORTS, TARGETS
 from ml.eligibility import missing
 
-
 PRODUCT_INPUTS = {
     "GP01": {
-        "critical": ["vehicle_ownership", "vehicle_type", "owns_ev", "replacement_intent"],
-        "supporting": ["annual_mileage_estimate", "mean_monthly_fuel", "fuel_trend", "existing_vehicle_loan"],
+        "critical": [
+            "vehicle_ownership",
+            "vehicle_type",
+            "owns_ev",
+            "replacement_intent",
+        ],
+        "supporting": [
+            "annual_mileage_estimate",
+            "mean_monthly_fuel",
+            "fuel_trend",
+            "existing_vehicle_loan",
+        ],
     },
     "GP02": {
         "critical": ["homeowner", "property_type"],
-        "supporting": ["electricity_kwh_year", "gas_kwh_year", "heating_technology", "existing_mortgage"],
+        "supporting": [
+            "electricity_kwh_year",
+            "gas_kwh_year",
+            "heating_technology",
+            "existing_mortgage",
+        ],
     },
     "GP03": {
         "critical": ["homeowner", "roof_suitable"],
-        "supporting": ["property_type", "electricity_kwh_year", "region", "household_size"],
+        "supporting": [
+            "property_type",
+            "electricity_kwh_year",
+            "region",
+            "household_size",
+        ],
     },
     "GP04": {
         "critical": ["paper_statements_enabled", "digital_logins_month"],
@@ -65,16 +85,18 @@ def _validation_bins(pid: str) -> list[dict[str, Any]]:
         rate = float(item.get("observed_rate", 0.0))
         lower = round(float(item["lower"]), 1)
         interval = _wilson(round(rate * n), n)
-        result.append({
-            "lower": lower,
-            "upper": min(1.0, lower + 0.1),
-            "n": n,
-            "validation_customers": n,
-            "mean_probability": float(item["mean_probability"]),
-            "observed_rate": rate,
-            "observed_simulated_takeup_rate": rate,
-            "observed_rate_wilson_95_interval": interval,
-        })
+        result.append(
+            {
+                "lower": lower,
+                "upper": min(1.0, lower + 0.1),
+                "n": n,
+                "validation_customers": n,
+                "mean_probability": float(item["mean_probability"]),
+                "observed_rate": rate,
+                "observed_simulated_takeup_rate": rate,
+                "observed_rate_wilson_95_interval": interval,
+            }
+        )
     return result
 
 
@@ -83,7 +105,9 @@ def build_reference() -> dict[str, Any]:
     split_path = DATA / "processed/splits.json"
     feature_path = DATA / "processed/customer_360.csv"
     if not split_path.exists() or not feature_path.exists():
-        raise FileNotFoundError("Customer 360 data and saved customer splits are required")
+        raise FileNotFoundError(
+            "Customer 360 data and saved customer splits are required"
+        )
     splits = json.loads(split_path.read_text())
     train_ids = set(splits["train"])
     val_ids = set(splits["validation"])
@@ -93,7 +117,9 @@ def build_reference() -> dict[str, Any]:
     frame = pd.read_csv(feature_path).set_index("customer_id")
     train = frame.loc[frame.index.intersection(train_ids)]
     if len(train) != len(train_ids):
-        raise ValueError("Some saved training customer IDs are absent from Customer 360")
+        raise ValueError(
+            "Some saved training customer IDs are absent from Customer 360"
+        )
 
     products: dict[str, Any] = {}
     for pid, groups in PRODUCT_INPUTS.items():
@@ -112,7 +138,9 @@ def build_reference() -> dict[str, Any]:
                     "training_nonmissing": int(len(valid)),
                 }
             elif feature in CATEGORICAL:
-                categorical_values[feature] = sorted(str(v) for v in values.dropna().unique())
+                categorical_values[feature] = sorted(
+                    str(v) for v in values.dropna().unique()
+                )
         report_path = REPORTS / f"{pid}.json"
         report = json.loads(report_path.read_text()) if report_path.exists() else {}
         model_name = report.get("selected")
@@ -158,23 +186,40 @@ def _level(missing_count: int, total: int, critical_missing: int) -> str:
     return "high"
 
 
-def assess_reliability(pid: str, features: dict[str, Any], propensity: float,
-                       reference: dict[str, Any] | None, conflicts: list[str] | None = None) -> dict[str, Any]:
+def assess_reliability(
+    pid: str,
+    features: dict[str, Any],
+    propensity: float,
+    reference: dict[str, Any] | None,
+    conflicts: list[str] | None = None,
+) -> dict[str, Any]:
     """Assess per-row reliability without changing propensity or eligibility."""
     if pid not in PRODUCT_INPUTS:
         raise ValueError(f"Unknown product: {pid}")
-    if not isinstance(propensity, (int, float)) or not math.isfinite(float(propensity)) or not 0 <= propensity <= 1:
+    if (
+        not isinstance(propensity, (int, float))
+        or not math.isfinite(float(propensity))
+        or not 0 <= propensity <= 1
+    ):
         raise ValueError("propensity must be finite and in [0, 1]")
     group = PRODUCT_INPUTS[pid]
     relevant = group["critical"] + group["supporting"]
     codes: list[str] = []
-    details: dict[str, Any] = {"missing_features": [], "numeric_out_of_range": {}, "unseen_categories": {}}
+    details: dict[str, Any] = {
+        "missing_features": [],
+        "numeric_out_of_range": {},
+        "unseen_categories": {},
+    }
     observed = [key for key in relevant if not missing(features.get(key))]
     missing_features = [key for key in relevant if missing(features.get(key))]
     critical_missing = [key for key in group["critical"] if missing(features.get(key))]
     details["missing_features"] = missing_features
     if missing_features:
-        codes.append("IMPORTANT_FEATURES_MISSING" if critical_missing else "SUPPORTING_FEATURES_MISSING")
+        codes.append(
+            "IMPORTANT_FEATURES_MISSING"
+            if critical_missing
+            else "SUPPORTING_FEATURES_MISSING"
+        )
     completeness = _level(len(missing_features), len(relevant), len(critical_missing))
 
     ref_product = (reference or {}).get("products", {}).get(pid)
@@ -187,7 +232,7 @@ def assess_reliability(pid: str, features: dict[str, Any], propensity: float,
             value = features.get(key)
             if missing(value):
                 # Missingness substantially unlike training is a separate warning.
-                if (ref_product.get("training_missing_rates", {}).get(key, 1.0) < 0.01):
+                if ref_product.get("training_missing_rates", {}).get(key, 1.0) < 0.01:
                     codes.append("UNUSUAL_MISSINGNESS_PATTERN")
                 continue
             if key in numeric_bounds:
@@ -203,7 +248,9 @@ def assess_reliability(pid: str, features: dict[str, Any], propensity: float,
                 lo, hi = bound.get("lower_01"), bound.get("upper_99")
                 if lo is not None and hi is not None and not lo <= numeric_value <= hi:
                     outliers.append(key)
-            elif key in categorical_values and str(value) not in categorical_values[key]:
+            elif (
+                key in categorical_values and str(value) not in categorical_values[key]
+            ):
                 details["unseen_categories"][key] = str(value)
         details["numeric_out_of_range"] = outliers
         if outliers:
@@ -211,12 +258,22 @@ def assess_reliability(pid: str, features: dict[str, Any], propensity: float,
         if details["unseen_categories"]:
             codes.append("UNSEEN_CATEGORICAL_VALUE")
     familiarity_issues = len(outliers) + len(details["unseen_categories"])
-    familiarity = "unavailable" if distribution_unavailable else "high" if familiarity_issues == 0 else "medium" if familiarity_issues == 1 else "low"
+    familiarity = (
+        "unavailable"
+        if distribution_unavailable
+        else (
+            "high"
+            if familiarity_issues == 0
+            else "medium" if familiarity_issues == 1 else "low"
+        )
+    )
 
     band = None
     validation = (ref_product or {}).get("validation", {})
     for candidate in validation.get("bins", []):
-        if candidate["lower"] <= propensity < candidate["upper"] or (propensity == 1 and candidate["upper"] == 1):
+        if candidate["lower"] <= propensity < candidate["upper"] or (
+            propensity == 1 and candidate["upper"] == 1
+        ):
             band = candidate
             break
     if band is None:
@@ -227,9 +284,22 @@ def assess_reliability(pid: str, features: dict[str, Any], propensity: float,
         interval = band.get("observed_rate_wilson_95_interval")
         width = interval[1] - interval[0] if interval else 1.0
         n = int(band.get("n", 0))
-        if n >= 100 and width <= 0.20 and ece is not None and ece <= 0.05 and brier is not None and brier <= 0.15:
+        if (
+            n >= 100
+            and width <= 0.20
+            and ece is not None
+            and ece <= 0.05
+            and brier is not None
+            and brier <= 0.15
+        ):
             calibration = "high"
-        elif n >= 30 and ece is not None and ece <= 0.08 and brier is not None and brier <= 0.20:
+        elif (
+            n >= 30
+            and ece is not None
+            and ece <= 0.08
+            and brier is not None
+            and brier <= 0.20
+        ):
             calibration = "medium"
         else:
             calibration = "low"
@@ -239,7 +309,9 @@ def assess_reliability(pid: str, features: dict[str, Any], propensity: float,
             codes.append("WEAK_VALIDATION_CALIBRATION_EVIDENCE")
     if band is not None:
         details["validation_score_band"] = band
-    details["validation_metrics"] = {key: validation.get(key) for key in ("n", "brier", "ece")}
+    details["validation_metrics"] = {
+        key: validation.get(key) for key in ("n", "brier", "ece")
+    }
     details["input_feature_count"] = len(relevant)
     details["observed_feature_count"] = len(observed)
     details["critical_feature_count"] = len(group["critical"])
@@ -252,7 +324,12 @@ def assess_reliability(pid: str, features: dict[str, Any], propensity: float,
     all_missing = not observed
     if all_missing or distribution_unavailable or calibration == "unavailable":
         level = "unavailable"
-    elif conflict_list or completeness == "low" or familiarity == "low" or calibration == "low":
+    elif (
+        conflict_list
+        or completeness == "low"
+        or familiarity == "low"
+        or calibration == "low"
+    ):
         level = "low"
     elif completeness == "high" and familiarity == "high" and calibration == "high":
         level = "high"
@@ -272,7 +349,10 @@ def assess_reliability(pid: str, features: dict[str, Any], propensity: float,
             "validation_calibration": calibration,
             "reason_codes": codes,
             "details": details,
-            "limitations": [LIMITATION, "No numerical per-customer confidence or correctness probability is claimed."],
+            "limitations": [
+                LIMITATION,
+                "No numerical per-customer confidence or correctness probability is claimed.",
+            ],
         },
     }
 
